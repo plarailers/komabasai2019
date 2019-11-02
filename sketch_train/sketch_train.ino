@@ -123,18 +123,18 @@ void loop() {
   Serial.print(" light:");
   Serial.println(value);  //読み取った明るさを表示
   
-//  if (value > maxCdS) {  //明るさが大きければ
-//    Serial.print(" marker_exist"); //マーカーがあった
+  if (value > maxCdS) {  //明るさが大きければ
+    Serial.print(" marker_exist"); //マーカーがあった
 //    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
 //    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
-//    if (flagBefore == flagNow) { //赤外線による信号が
-//      //直前のものと同じなら
-//      stop();  
-//    }
-//  else {//違うならそのまま止める。
-//    
-//    delay(2000);//時間をちょっと空けておく
-//    flagBefore = flagNow;
-//    }
-//  }
+    if (flagBefore == flagNow) { //赤外線による信号が
+      //直前のものと同じなら
+      stop();  
+    }
+  else {//違うならそのまま止める。
+    
+    delay(2000);//時間をちょっと空けておく
+    flagBefore = flagNow;
+    }
+  }
 }
