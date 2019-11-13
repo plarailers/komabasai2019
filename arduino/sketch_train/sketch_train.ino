@@ -11,7 +11,10 @@ const int outPinB = 9;  //モーターのIN2
 const int recvPin = 5; //赤外線の信号を受信
 const int sensorPin = A6; //CdSセンサーの計測
 const int volt_sensorPin = A7;  //電圧の計測
-int CDS = []
+
+int cds[6] =  {};//差分制御用（マーカー）　番号が大きいほど最新
+double ave[4] = {};
+const int df = 1;
 
 
 int value;  //CdSセンサーの計測値を格納
@@ -125,7 +128,32 @@ void loop() {
   Serial.print(" light:");
   Serial.println(value);  //読み取った明るさを表示
 
-  if (value > maxCdS) {  //明るさが大きければ
+  for(i=0; i<5; i++){
+    cds[i] = cds[i+1];
+  }
+  cds[5] = value;
+
+  ave[0] = (cds[0]+cds[1]+cds[2])/3//移動平均を計算
+  ave[1] = (cds[1]+cds[2]+cds[3])/3
+  ave[2] = (cds[2]+cds[3]+cds[4])/3
+  ave[3] = (cds[3]+cds[4]+cds[5])/3
+
+  if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df){
+    Serial.print(" marker_exist"); //マーカーがあった
+//    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
+//    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
+    if (flagBefore == flagNow) { //赤外線による信号が
+      //直前のものと同じなら
+      stop();
+  }else{
+    delay(2000);//時間をちょっと空けておく
+    flagBefore = flagNow;
+  }
+}
+
+
+
+/*  if (value > maxCdS) {  //明るさが大きければ
     Serial.print(" marker_exist"); //マーカーがあった
 //    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
 //    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
@@ -138,5 +166,5 @@ void loop() {
     delay(2000);//時間をちょっと空けておく
     flagBefore = flagNow;
     }
-  }
+  }*/
 }
