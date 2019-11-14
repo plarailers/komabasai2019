@@ -16,6 +16,14 @@ int cds[6] =  {};//差分制御用（マーカー）　番号が大きいほど�
 double ave[4] = {};
 const int df = 1;
 
+unsigned long time = 0;//状況判別に使う時間を格納
+int status = 3;//車両の状況
+//1:ch1を受け取った〜ch1を受け取ってから2秒後
+//2:ch1を受け取ってから2秒後〜他の信号(ch2,ch3)を受け取った　　　　　　　　＝前進中
+//3:ch2を受け取った〜ch2を受け取ってから2秒後
+//4:ch2を受け取ってから2秒後〜他の信号(ch2,ch3)を受け取った　　　　　　　　＝後進中
+//5:ch3を受け取った　or マーカを読み取った〜他の信号(ch2,ch3)を受け取った　＝停車中
+
 
 int value;  //CdSセンサーの計測値を格納
 double volt_value;  //電圧の計測値を格納
@@ -62,16 +70,21 @@ void move(decode_results *results, byte speed) {  //信号を受け取って動�
     Serial.println("Ahead");
     flagBefore = flagNow;
     flagNow = 1;
+    status = 1;
+    time = millis();
     moveAhead(speed);
   }
   else if (results->value == channel_2) {
     Serial.println("Back");
     flagBefore = flagNow;
     flagNow = 2;
+    status = 3;
+    time = millis();
     moveBack(speed);
   }
   else if (results->value == channel_3) {
     Serial.println("stop");
+    status = 5;
     stop();
   }
   else if (results->value == channel_4) { //マーカーがあったときに自分で送った信号を受信した
@@ -128,7 +141,7 @@ void loop() {
   Serial.print(" light:");
   Serial.println(value);  //読み取った明るさを表示
 
-  for(i=0; i<5; i++){
+  /*for(i=0; i<5; i++){
     cds[i] = cds[i+1];
   }
   cds[5] = value;
@@ -149,22 +162,19 @@ void loop() {
     delay(2000);//時間をちょっと空けておく
     flagBefore = flagNow;
   }
-}
+}*/
+  if(status == 1 && millis() - time > 200){//ch1を受け取ってから2秒経過したか判別
+    status = 2;
+  }else if(status == 3 && millis() - time > 200){//ch2を受け取ってから2秒経過したか判別
+    status = 4;
+  }
 
 
-
-/*  if (value > maxCdS) {  //明るさが大きければ
+  if (value > maxCdS && status != 1 && status != 3 && status != 5) {  //明るさが大きく、かつ前進または後進信号が入ってから2秒経過している
     Serial.print(" marker_exist"); //マーカーがあった
 //    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
 //    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
-    if (flagBefore == flagNow) { //赤外線による信号が
-      //直前のものと同じなら
-      stop();
+    stop();//停車
+    status == 5;
     }
-  else {//違うならそのまま止める。
-
-    delay(2000);//時間をちょっと空けておく
-    flagBefore = flagNow;
-    }
-  }*/
 }
