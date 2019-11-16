@@ -1,3 +1,5 @@
+//プロセッサについて偽物のArduino nanoはoldなんたらに、本物はoldじゃない方にする
+
 #include <IRremote.h>
 const unsigned long channel_1 = 0x20DFDB8C;
 const unsigned long channel_2 = 0x20DFDB4C;
@@ -21,6 +23,7 @@ int flagBefore, flagNow; //信号を記録
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
 double maxCdS = 250; //CdSがこの値よりも高くなったら銀シールの上を通過した
+double ratio = 0.6; //前進時の回転速度をこの倍率に下げる。
 
 void setup() {
   Serial.begin(9600);
@@ -38,7 +41,7 @@ void printNumber(decode_results *results) { //赤外線センサーで読み取�
 }
 
 void moveAhead(byte speed){ //前進
-  analogWrite(outPinA,speed); //PWMでスピードを変化させる
+  analogWrite(outPinA,speed * ratio); //PWMでスピードを変化させる
   analogWrite(outPinB,0);
 }
 
@@ -127,6 +130,7 @@ void loop() {
     Serial.print(" marker_exist"); //マーカーがあった
 //    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
 //    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
+//    ここでコメントアウトしているのはirsendおよびirrecvをするとつぎにリモコンからの指令を受け取れないからである
     if (flagBefore == flagNow) { //赤外線による信号が
       //直前のものと同じなら
       stop();  
