@@ -14,7 +14,7 @@ const int volt_sensorPin = A7;  //電圧の計測
 
 int cds[6] =  {};//差分制御用（マーカー）　番号が大きいほど最新
 double ave[4] = {};
-const int df = 1;
+const int df = 8; //
 
 unsigned long time = 0;//状況判別に使う時間を格納
 int status = 3;//車両の状況
@@ -33,7 +33,7 @@ IRrecv irrecv(recvPin);
 int flagBefore, flagNow; //信号を記録
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
-double maxCdS = 250; //CdSがこの値よりも高くなったら銀シールの上を通過した
+double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
 
 void setup() {
   Serial.begin(9600);
@@ -118,8 +118,8 @@ void loop() {
 
   if (volt_value < minVolt) { //電圧が最低電圧よりも低かったら
     Serial.print(" battery_shortage");
-    irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
-    irrecv.enableIRIn();
+    //irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
+    //irrecv.enableIRIn();
     speed = 255;  //最大の電圧をモーターにかける
     }
 
@@ -141,40 +141,31 @@ void loop() {
   Serial.print(" light:");
   Serial.println(value);  //読み取った明るさを表示
 
-  /*for(i=0; i<5; i++){
-    cds[i] = cds[i+1];
-  }
-  cds[5] = value;
-
-  ave[0] = (cds[0]+cds[1]+cds[2])/3//移動平均を計算
-  ave[1] = (cds[1]+cds[2]+cds[3])/3
-  ave[2] = (cds[2]+cds[3]+cds[4])/3
-  ave[3] = (cds[3]+cds[4]+cds[5])/3
-
-  if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df){
-    Serial.print(" marker_exist"); //マーカーがあった
-//    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
-//    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
-    if (flagBefore == flagNow) { //赤外線による信号が
-      //直前のものと同じなら
-      stop();
-  }else{
-    delay(2000);//時間をちょっと空けておく
-    flagBefore = flagNow;
-  }
-}*/
-  if(status == 1 && millis() - time > 200){//ch1を受け取ってから2秒経過したか判別
+  if(status == 1 && millis() - time > 2000){//ch1を受け取ってから2秒経過したか判別
     status = 2;
-  }else if(status == 3 && millis() - time > 200){//ch2を受け取ってから2秒経過したか判別
+  }else if(status == 3 && millis() - time > 2000){//ch2を受け取ってから2秒経過したか判別
     status = 4;
   }
 
 
-  if (value > maxCdS && status != 1 && status != 3 && status != 5) {  //明るさが大きく、かつ前進または後進信号が入ってから2秒経過している
+  for(int i=0; i<5; i++){
+    cds[i] = cds[i+1];
+  }
+
+  cds[5] = value;
+  ave[0] = (cds[0]+cds[1]+cds[2])/3;//移動平均を計算
+  ave[1] = (cds[1]+cds[2]+cds[3])/3;
+  ave[2] = (cds[2]+cds[3]+cds[4])/3;
+  ave[3] = (cds[3]+cds[4]+cds[5])/3;
+
+  if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df && status != 1 && status != 3 && status != 5){
     Serial.print(" marker_exist"); //マーカーがあった
-//    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
-//    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
     stop();//停車
     status == 5;
-    }
+  }
+
+
+
+
+
 }
