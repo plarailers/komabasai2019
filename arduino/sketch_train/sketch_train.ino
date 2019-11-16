@@ -34,6 +34,7 @@ int flagBefore, flagNow; //信号を記録
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
 double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
+double ratio = 0.6; //Ahead時は遅くする
 
 void setup() {
   Serial.begin(9600);
@@ -51,7 +52,7 @@ void printNumber(decode_results *results) { //赤外線センサーで読み取�
 }
 
 void moveAhead(byte speed){ //前進
-  analogWrite(outPinA,speed); //PWMでスピードを変化させる
+  analogWrite(outPinA,speed * ratio); //PWMでスピードを変化させる
   analogWrite(outPinB,0);
 }
 
@@ -160,6 +161,8 @@ void loop() {
 
   if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df && status != 1 && status != 3 && status != 5){
     Serial.print(" marker_exist"); //マーカーがあった
+    irsend.sendNEC(channel_4, 32);  //母艦にマーカーの存在を伝達
+    irrecv.enableIRIn();  //また赤外線の信号を受け取れるようにする
     stop();//停車
     status == 5;
   }
