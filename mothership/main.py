@@ -8,6 +8,7 @@ recv_queue = Queue()
 send_queue = Queue()
 
 def setup():
+    global arduino
     port_list = serial.tools.list_ports.comports()
     if len(port_list) == 0:
         print("ポートがありません。")
