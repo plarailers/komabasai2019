@@ -4,17 +4,14 @@
 
 Git および Python の環境が必要です。
 
-## インストール
+## ライブラリのインストール
 
 ```
-cd mothership
-pip install pipenv
-pipenv install
+pip install -r requirements.txt
 ```
 
 ## 実行
 
 ```
-cd mothership
-pipenv run python main.py
+python main.py
 ```
