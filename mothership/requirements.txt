@@ -1,2 +1,4 @@
+pick==0.6.4
 pyserial==3.4
 schedule==0.6.0
+windows-curses==2.1.0
