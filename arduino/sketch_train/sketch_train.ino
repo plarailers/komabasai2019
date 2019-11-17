@@ -103,8 +103,8 @@ void loop() {
   
   if (volt_value < minVolt) { //電圧が最低電圧よりも低かったら
     Serial.print(" battery_shortage");
-    irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
-    irrecv.enableIRIn();
+    //irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
+    //irrecv.enableIRIn();
     speed = 255;  //最大の電圧をモーターにかける
     }
     
