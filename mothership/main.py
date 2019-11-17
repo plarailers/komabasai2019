@@ -2,6 +2,7 @@ import serial
 import serial.tools.list_ports
 import time
 from queue import Queue
+from pick import pick
 
 arduino = None
 recv_queue = Queue()
@@ -13,11 +14,8 @@ def setup():
     if len(port_list) == 0:
         print("ポートがありません。")
         exit()
-    print("ポートを選択:")
-    for port in port_list:
-        print("-", port)
-    port_name = input()
-    arduino = serial.Serial(port_name, baudrate=9600)
+    port, index = pick(port_list, "ポートを選択:")
+    arduino = serial.Serial(port.device, baudrate=9600)
     print("通信開始")
 
 
