@@ -10,6 +10,8 @@ const int servo1_LeftAngle = ;
 const int servo2_RightAngle = ;
 const int servo2_LeftAngle = ;
 
+const unsigned int
+const unsigned int
 
 const int outPin = ;//赤外線の送信ピン
 const int recvPin = ;//赤外線の受信ピン
@@ -30,6 +32,7 @@ void servo2Left(){
   servo2.write(servo2_LefttAngle, servoSpeed, true);
   }
 
+
 void setup(){
   Serial.begin(9600);
   irrecv.enableIRIn();
@@ -39,11 +42,31 @@ void setup(){
   }
 
 void loop(){
+  
   if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
-    data = results.value % 256;
+    data = results.value % 256;//4バイト→1バイト
     irrecv.resume();
     Serial.write(data);//megaの場合はserial1を使う
     }
+
+  while(serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
+    data = serial.read();
+    if(data == ){
+      irsend.sendNEC(data + 551541504, 32);//1バイト→4バイト
+      irrecv.enableIRIn();
+    }else if(data == ){
+      servo1Right();
+    }else if(data == ){
+      servo1Left();
+    }else if(data == ){
+      servo2Right();
+    }else if(data == ){
+      servo2Left();
+    }
+  }
+  
+  }
+    
   
 
   
