@@ -5,8 +5,8 @@ VarSpeedServo servo1;
 VarSpeedServo servo2;
 
 const int servoSpeed = /*サーボのスピード*/; //1から255、10から30程度が最適か
-const int servo1_RightAngle = ;//サーボ1を右にふるときの角度
-const int servo1_LeftAngle = ;//0から180
+const int servo1_RightAngle = ;//サーボ1を右にふるときの角度、0から180
+const int servo1_LeftAngle = ;
 const int servo2_RightAngle = ;
 const int servo2_LeftAngle = ;
 
@@ -40,10 +40,12 @@ void setup(){
 
 void loop(){
   if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
-    data = decode.value % 256;
-    decode.resume();
+    data = results.value % 256;
+    irrecv.resume();
     Serial.write(data);//megaの場合はserial1を使う
     }
+  
+
   
   
     
