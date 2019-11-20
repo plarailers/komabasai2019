@@ -607,7 +607,7 @@ Kudari.
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=1A
+Ressyabangou=①
 Ressyamei=のぞみ
 Gousuu=1
 EkiJikoku=1;600,2,2,1;730/
@@ -615,7 +615,7 @@ EkiJikoku=1;600,2,2,1;730/
 Ressya.
 Houkou=Kudari
 Syubetsu=2
-Ressyabangou=631A
+Ressyabangou=②
 Ressyamei=こだま
 Gousuu=631
 EkiJikoku=1;815,1;855/905,1;930/1030,1;1110/
@@ -623,7 +623,7 @@ EkiJikoku=1;815,1;855/905,1;930/1030,1;1110/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=3A
+Ressyabangou=③
 Ressyamei=のぞみ
 Gousuu=3
 EkiJikoku=1;850,2,2,1;1020/
@@ -631,7 +631,7 @@ EkiJikoku=1;850,2,2,1;1020/
 Ressya.
 Houkou=Kudari
 Syubetsu=1
-Ressyabangou=501A
+Ressyabangou=④
 Ressyamei=ひかり
 Gousuu=501
 EkiJikoku=1;1110,1;1150/1250,2,1;1350/
@@ -639,7 +639,7 @@ EkiJikoku=1;1110,1;1150/1250,2,1;1350/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=5A
+Ressyabangou=①
 Ressyamei=のぞみ
 Gousuu=5
 EkiJikoku=1;1200,2,2,1;1330/
@@ -647,7 +647,7 @@ EkiJikoku=1;1200,2,2,1;1330/
 Ressya.
 Houkou=Kudari
 Syubetsu=2
-Ressyabangou=633A
+Ressyabangou=②
 Ressyamei=こだま
 Gousuu=633
 EkiJikoku=1;1415,1;1455/1505,1;1530/1630,1;1710/
@@ -655,7 +655,7 @@ EkiJikoku=1;1415,1;1455/1505,1;1530/1630,1;1710/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=7A
+Ressyabangou=③
 Ressyamei=のぞみ
 Gousuu=7
 EkiJikoku=1;1450,2,2,1;1620/
@@ -663,7 +663,7 @@ EkiJikoku=1;1450,2,2,1;1620/
 Ressya.
 Houkou=Kudari
 Syubetsu=1
-Ressyabangou=461A
+Ressyabangou=④
 Ressyamei=ひかり
 Gousuu=461
 EkiJikoku=1;1710,2,1;1810/1910,1;1950/
@@ -671,7 +671,7 @@ EkiJikoku=1;1710,2,1;1810/1910,1;1950/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=9A
+Ressyabangou=①
 Ressyamei=のぞみ
 Gousuu=9
 EkiJikoku=1;1800,2,2,1;1930/
@@ -679,7 +679,7 @@ EkiJikoku=1;1800,2,2,1;1930/
 Ressya.
 Houkou=Kudari
 Syubetsu=2
-Ressyabangou=635A
+Ressyabangou=②
 Ressyamei=こだま
 Gousuu=635
 EkiJikoku=1;2015,1;2055/2105,1;2130/2230,1;2310/
@@ -687,7 +687,7 @@ EkiJikoku=1;2015,1;2055/2105,1;2130/2230,1;2310/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=11A
+Ressyabangou=③
 Ressyamei=のぞみ
 Gousuu=11
 EkiJikoku=1;2050,2,2,1;2220/
@@ -695,7 +695,7 @@ EkiJikoku=1;2050,2,2,1;2220/
 Ressya.
 Houkou=Kudari
 Syubetsu=1
-Ressyabangou=503A
+Ressyabangou=④
 Ressyamei=ひかり
 Gousuu=503
 EkiJikoku=1;2310,1;2350/050,2,1;150/
@@ -703,7 +703,7 @@ EkiJikoku=1;2310,1;2350/050,2,1;150/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=13A
+Ressyabangou=①
 Ressyamei=のぞみ
 Gousuu=13
 EkiJikoku=1;000,2,2,1;130/
@@ -711,7 +711,7 @@ EkiJikoku=1;000,2,2,1;130/
 Ressya.
 Houkou=Kudari
 Syubetsu=2
-Ressyabangou=637A
+Ressyabangou=②
 Ressyamei=こだま
 Gousuu=637
 EkiJikoku=1;215,1;255/305,1;330/430,1;510/
@@ -719,7 +719,7 @@ EkiJikoku=1;215,1;255/305,1;330/430,1;510/
 Ressya.
 Houkou=Kudari
 Syubetsu=0
-Ressyabangou=15A
+Ressyabangou=③
 Ressyamei=のぞみ
 Gousuu=15
 EkiJikoku=1;250,2,2,1;420/
@@ -727,7 +727,7 @@ EkiJikoku=1;250,2,2,1;420/
 Ressya.
 Houkou=Kudari
 Syubetsu=1
-Ressyabangou=463A
+Ressyabangou=④
 Ressyamei=ひかり
 Gousuu=463
 EkiJikoku=1;510,2,1;610/710,1;750/
@@ -737,7 +737,7 @@ Nobori.
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=2A
+Ressyabangou=②
 Ressyamei=のぞみ
 Gousuu=2
 EkiJikoku=,,1;620,2,2,1;750/
@@ -745,7 +745,7 @@ EkiJikoku=,,1;620,2,2,1;750/
 Ressya.
 Houkou=Nobori
 Syubetsu=2
-Ressyabangou=632A
+Ressyabangou=①
 Ressyamei=こだま
 Gousuu=632
 EkiJikoku=,,1;845,1;925/935,1;1000/1100,1;1140/
@@ -753,7 +753,7 @@ EkiJikoku=,,1;845,1;925/935,1;1000/1100,1;1140/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=4A
+Ressyabangou=④
 Ressyamei=のぞみ
 Gousuu=4
 EkiJikoku=,,1;930,2,2,1;1100/
@@ -761,7 +761,7 @@ EkiJikoku=,,1;930,2,2,1;1100/
 Ressya.
 Houkou=Nobori
 Syubetsu=1
-Ressyabangou=462A
+Ressyabangou=③
 Ressyamei=ひかり
 Gousuu=462
 EkiJikoku=,,1;1150,1;1230/1330,2,1;1430/
@@ -769,7 +769,7 @@ EkiJikoku=,,1;1150,1;1230/1330,2,1;1430/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=6A
+Ressyabangou=②
 Ressyamei=のぞみ
 Gousuu=6
 EkiJikoku=,,1;1220,2,2,1;1350/
@@ -777,7 +777,7 @@ EkiJikoku=,,1;1220,2,2,1;1350/
 Ressya.
 Houkou=Nobori
 Syubetsu=2
-Ressyabangou=634A
+Ressyabangou=①
 Ressyamei=こだま
 Gousuu=634
 EkiJikoku=,,1;1445,1;1525/1535,1;1600/1700,1;1740/
@@ -785,7 +785,7 @@ EkiJikoku=,,1;1445,1;1525/1535,1;1600/1700,1;1740/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=8A
+Ressyabangou=④
 Ressyamei=のぞみ
 Gousuu=8
 EkiJikoku=,,1;1530,2,2,1;1700/
@@ -793,7 +793,7 @@ EkiJikoku=,,1;1530,2,2,1;1700/
 Ressya.
 Houkou=Nobori
 Syubetsu=1
-Ressyabangou=502A
+Ressyabangou=③
 Ressyamei=ひかり
 Gousuu=502
 EkiJikoku=,,1;1750,2,1;1850/1950,1;2030/
@@ -801,7 +801,7 @@ EkiJikoku=,,1;1750,2,1;1850/1950,1;2030/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=10A
+Ressyabangou=②
 Ressyamei=のぞみ
 Gousuu=10
 EkiJikoku=,,1;1820,2,2,1;1950/
@@ -809,7 +809,7 @@ EkiJikoku=,,1;1820,2,2,1;1950/
 Ressya.
 Houkou=Nobori
 Syubetsu=2
-Ressyabangou=636A
+Ressyabangou=①
 Ressyamei=こだま
 Gousuu=636
 EkiJikoku=,,1;2045,1;2125/2135,1;2200/2300,1;2340/
@@ -817,7 +817,7 @@ EkiJikoku=,,1;2045,1;2125/2135,1;2200/2300,1;2340/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=12A
+Ressyabangou=④
 Ressyamei=のぞみ
 Gousuu=12
 EkiJikoku=,,1;2130,2,2,1;2300/
@@ -825,7 +825,7 @@ EkiJikoku=,,1;2130,2,2,1;2300/
 Ressya.
 Houkou=Nobori
 Syubetsu=1
-Ressyabangou=464A
+Ressyabangou=③
 Ressyamei=ひかり
 Gousuu=464
 EkiJikoku=,,1;2350,1;030/130,2,1;230/
@@ -833,7 +833,7 @@ EkiJikoku=,,1;2350,1;030/130,2,1;230/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=14A
+Ressyabangou=②
 Ressyamei=のぞみ
 Gousuu=14
 EkiJikoku=,,1;020,2,2,1;150/
@@ -841,7 +841,7 @@ EkiJikoku=,,1;020,2,2,1;150/
 Ressya.
 Houkou=Nobori
 Syubetsu=2
-Ressyabangou=638A
+Ressyabangou=①
 Ressyamei=こだま
 Gousuu=638
 EkiJikoku=,,1;245,1;325/335,1;400/500,1;540/
@@ -849,7 +849,7 @@ EkiJikoku=,,1;245,1;325/335,1;400/500,1;540/
 Ressya.
 Houkou=Nobori
 Syubetsu=0
-Ressyabangou=16A
+Ressyabangou=④
 Ressyamei=のぞみ
 Gousuu=16
 EkiJikoku=,,1;330,2,2,1;500/
@@ -857,7 +857,7 @@ EkiJikoku=,,1;330,2,2,1;500/
 Ressya.
 Houkou=Nobori
 Syubetsu=1
-Ressyabangou=504A
+Ressyabangou=③
 Ressyamei=ひかり
 Gousuu=504
 EkiJikoku=,,1;550,2,1;650/750,1;830/
