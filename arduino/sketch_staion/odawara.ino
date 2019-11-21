@@ -42,8 +42,8 @@ void servo2_1(){
 void setup(){
   Serial1.begin(9600);
   irrecv.enableIRIn();
-  servo1.attach(13);
-  servo2.attach(3);
+  servo1.attach(6);
+  servo2.attach(13);
   }
 
 void loop(){
