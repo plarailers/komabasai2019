@@ -12,10 +12,10 @@ const unsigned long servo2_Siganl1 = 0x20DFDB14;
 
 
 const int servoSpeed = 50; //1から255
-const int servo1_Angle0 = ;//サーボ1を直進にするときの角度、0から180
-const int servo1_Angle1 = ;
-const int servo2_Angle0 = ;
-const int servo2_Angle1 = ;
+const int servo1_Angle0 = 0;//サーボ1を直進にするときの角度、0から180
+const int servo1_Angle1 = 180;
+const int servo2_Angle0 = 10;
+const int servo2_Angle1 = 180;
 
 
 const int recvPin = 11;//赤外線の受信ピン
