@@ -42,8 +42,8 @@ void loop(){
     Serial.write(data);//megaの場合はserial1を使う
     }
 
-  while(serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
-    data = serial.read();  
+  while(Serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
+    data = Serial.read();  
     if(data == servo1_Siganl0){
       servo1_0();
     }else if(data == servo1_Siganl1){
