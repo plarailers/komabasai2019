@@ -5,17 +5,17 @@
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
-const unsigned int servo1_RightSiganl =;//サーボを動かす信号
-const unsigned int servo1_LeftSiganl =;
-const unsigned int servo2_RightSiganl =;
-const unsigned int servo2_LeftSiganl =;
+const unsigned int servo1_Siganl0 = 0x20DFDBD8;//サーボを動かす信号
+const unsigned int servo1_Siganl1 = 0x20DFDB38;
+const unsigned int servo2_Siganl0 = 0x20DFDBE4;
+const unsigned int servo2_Siganl1 = 0x20DFDB14;
 
 
 const int servoSpeed = 50; //1から255
-const int servo1_RightAngle = ;//サーボ1を右にふるときの角度、0から180
-const int servo1_LeftAngle = ;
-const int servo2_RightAngle = ;
-const int servo2_LeftAngle = ;
+const int servo1_Angle0 = ;//サーボ1を右にふるときの角度、0から180
+const int servo1_Angle1 = ;
+const int servo2_Angle0 = ;
+const int servo2_Angle1 = ;
 
 
 const int recvPin = 11;//赤外線の受信ピン
@@ -25,17 +25,17 @@ IRsend irsend;//sendPinはmegaは9,unoは3
 decode_results results;//うまくいかないときはloopの中へ
 
 
-void servo1Right(){//サーボ1を右にふる関数
-  servo1.write(servo1_RightAngle, servoSpeed, true);
+void servo1_0(){//サーボ1を右にふる関数
+  servo1.write(servo1_Angle0, servoSpeed, true);
   }
-void servo1Left(){
-  servo1.write(servo1_LeftAngle, servoSpeed, true);
+void servo1_1(){
+  servo1.write(servo1_Angle1, servoSpeed, true);
   }
-void servo2Right(){
-  servo2.write(servo2_RightAngle, servoSpeed, true);
+void servo2_0(){
+  servo2.write(servo2_Angle0, servoSpeed, true);
   }
-void servo2Left(){
-  servo2.write(servo2_LefttAngle, servoSpeed, true);
+void servo2_1(){
+  servo2.write(servo2_Angle1, servoSpeed, true);
   }
 
 
@@ -56,14 +56,14 @@ void loop(){
 
   while(serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
     data = serial.read();  
-    if(data == servo1_RightSiganl){
-      servo1Right();
-    }else if(data == servo1_LeftSiganl){
-      servo1Left();
-    }else if(data == servo2_RightSiganl){
-      servo2Right();
-    }else if(data == servo2_LeftSiganl){
-      servo2Left();
+    if(data == servo1_Siganl0){
+      servo1_0();
+    }else if(data == servo1_Siganl1){
+      servo1_1();
+    }else if(data == servo2_Siganl0){
+      servo2_0();
+    }else if(data == servo2_Siganl1){
+      servo2_1();
     }else{
       irsend.sendNEC(data + 551541504, 32);//1バイト→4バイト
       irrecv.enableIRIn();
@@ -71,4 +71,3 @@ void loop(){
   }
   
   }
-    
