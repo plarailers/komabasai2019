@@ -28,15 +28,18 @@ int status = 3;//車両の状況
 
 int value;  //CdSセンサーの計測値を格納
 double volt_value;  //電圧の計測値を格納
-byte speed; //モーターの回転スピード
+byte speedAhead; //モーターの前進回転スピード
+byte speedBack; //モーターの後進回転スピード
 IRsend irsend;  //sendPinはArduino nanoだと3番ピン
-IRrecv irrecv(recvPin);
+IRrecv irrecv(recvPin); //recvPinをrecv可能にする
 int flagBefore, flagNow; //信号を記録
+bool battery_is_full = true; //駅で判定。Trueならそのまま、Faulseならシステムを強制終了させる。
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
 double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
-
-double ratio = 0.6; //aheadの減速
+double cAhead = 1.275;
+double cBack = 1.438;
+double r = 2.5; //一定に保ちたい回転数
 
 void setup() {
   Serial.begin(9600);
@@ -54,7 +57,7 @@ void printNumber(decode_results *results) { //赤外線センサーで読み取�
 }
 
 void moveAhead(byte speed){ //前進
-  analogWrite(outPinA,speed * ratio); //PWMでスピードを変化させる
+  analogWrite(outPinA,speed); //PWMでスピードを変化させる
   analogWrite(outPinB,0);
 }
 
@@ -68,14 +71,14 @@ void stop(){  //停止
   analogWrite(outPinB,0);
 }
 
-void move(decode_results *results, byte speed) {  //信号を受け取って動く指令
+void move(decode_results *results, byte speedAhead, byte speedBack) {  //信号を受け取って動く指令
   if (results->value == channel_1) {
     Serial.println("Ahead");
     flagBefore = flagNow;
     flagNow = 1;
     status = 1;
     time = millis();
-    moveAhead(speed);
+    moveAhead(speedAhead);
   }
   else if (results->value == channel_2) {
     Serial.println("Back");
@@ -83,23 +86,18 @@ void move(decode_results *results, byte speed) {  //信号を受け取って動�
     flagNow = 2;
     status = 3;
     time = millis();
-    moveBack(speed);
+    moveBack(speedBack);
   }
   else if (results->value == channel_3) {
     Serial.println("stop");
     status = 5;
     stop();
   }
-  else if (results->value == channel_4) { //マーカーがあったときに自分で送った信号を受信した
-    Serial.println("marker_sent");
-  }
   else if (results->value == channel_no) {  //1111111111みたいな信号を受け取った
     Serial.println("nothing");
   }
   else {
     Serial.println("????"); //不明な信号を受け取った
-    //delay(2000);
-    //stop();
   }
   if (flagBefore == 0) {
       flagBefore = flagNow;
@@ -110,8 +108,6 @@ void loop() {
   Serial.print(flagBefore);
   Serial.print(flagNow);
 
-  decode_results  results;  //赤外線の指令を受け取る
-
   volt_value = analogRead(volt_sensorPin);  //電圧を計測
   volt_value *= 10;  //電圧をV単位に変換
   volt_value /= 1024;
@@ -119,30 +115,37 @@ void loop() {
   Serial.print(volt_value); //変換後の電圧値を表示
   Serial.print("V");
 
-  if (volt_value < minVolt) { //電圧が最低電圧よりも低かったら
+  if ((volt_value - 1) < (cAhead + r)) {
     Serial.print(" battery_shortage");
-    //irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
-    //irrecv.enableIRIn();
-    speed = 255;  //最大の電圧をモーターにかける
+    battery_is_full = false;
+    speedAhead = 255;  //最大の電圧をモーターにかける
     }
-
-  else if (volt_value >= minVolt) { //電池が十分にあれば
-    speed = 255*(minVolt/volt_value); //電圧が高い時ほどモーターに電圧をかけないようにして速度を一定にする
+  
+  if ((volt_value -1) < (cBack + r)) {
+    Serial.print(" battery_shortage");
+    battery_is_full = false;
+    speedBack = 255;  //最大の電圧をモーターにかける
   }
 
-  Serial.print(" speed:");  //スピードを表示
-  Serial.print(speed); //電圧値によって決定したspeedを表示
+  else if ((volt_value - 1) < (cAhead + r) && (volt_value -1) < (cBack + r)) { //電池が十分にあれば
+    speedAhead = 255 * (cAhead + r) / (volt_value - 1);
+    speedBack = 255 * (cBack + r) / (volt_value - 1);
+    }
+
+  Serial.print(" speedAhead:");  //スピードを表示
+  Serial.print(speedAhead); //電圧値によって決定したspeedAheadを表示
   Serial.print(" ");
+  Serial.print(" speedBack:");
+  Serial.print(speedBack);
+  Serial.print(" ");
+
+  decode_results  results;  //赤外線の指令を受け取る
 
   if (irrecv.decode(&results)) {  //赤外線の指令を受け取ってモーターを動かす
     printNumber(&results);  //受け取った信号を表示
-    move(&results, speed); //受け取った信号に応じた動きをする
+    move(&results, speedAhead, speedBack); //受け取った信号に応じた動きをする
     irrecv.resume();  //また信号を受け取れるようにする
   }
-
-  value = analogRead(sensorPin);  //CdSセンサーで明るさを計測
-  Serial.print(" light:");
-  Serial.println(value);  //読み取った明るさを表示
 
   if(status == 1 && millis() - time > 2000){//ch1を受け取ってから2秒経過したか判別
     status = 2;
@@ -150,6 +153,10 @@ void loop() {
     status = 4;
   }
 
+
+value = analogRead(sensorPin);  //CdSセンサーで明るさを計測
+  Serial.print(" light:");
+  Serial.println(value);  //読み取った明るさを表示
 
   for(int i=0; i<5; i++){
     cds[i] = cds[i+1];
@@ -163,16 +170,17 @@ void loop() {
 
   if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df && status != 1 && status != 3 && status != 5){
     Serial.print(" marker_exist"); //マーカーがあった
-    stop();//停車
-    for (int i = 0; i < 5; i++){
+    //stop();//停車
+    for (int i = 0; i < 2; i++){
       irsend.sendNEC(channel_4, 32);
+    }
+    if (battery_is_full = false) {//バッテリーが足りなければ母艦にバッテリー不足を伝えてシステム終了する
+      for (int j = 0; j < 2; j++) {
+        irsend.sendNEC(channel_5, 32);
+      }
     }
     irrecv.enableIRIn();
     status == 5;
   }
-
-
-
-
 
 }
