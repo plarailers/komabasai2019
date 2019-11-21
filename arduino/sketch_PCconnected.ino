@@ -33,6 +33,21 @@ void loop(){
    data = Serial4.read();
    Serial.write(data);
    }
+  
+  while(Serial.available() > 0){//PCから受け取った信号を駅のArduinoに送信
+    data = Serial.read();
+    if(data == 0xE0 || 0x10){//東京のサーボの信号を送信
+      Serial1.write(data);
+    }else if(data == 0x90 || 0x50 || 0xD0 || 0x30){//小田原のサーボの信号を送信
+      Serial2.write(data);
+    }else if(data == 0xE8 || 0x18 || 0x98 || 0x58){//静岡のサーボの信号を送信
+      Serial3.write(data);
+    }else if(data == 0xD8 || 0x38 || 0xE4 || 0x14){//名古屋のサーボの信号を送信
+      Serial4.write(data);
+    }
+    
+ }
+      
    
     
     
