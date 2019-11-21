@@ -4,13 +4,13 @@
 
 VarSpeedServo servo1;
 
-const unsigned int servo1_RightSiganl =;//サーボを動かす信号
-const unsigned int servo1_LeftSiganl =;
+const unsigned int servo1_RightSiganl = 0x20DFDBE0;//サーボを動かす信号
+const unsigned int servo1_LeftSiganl = 0x20DFDB10;
 
 
 const int servoSpeed = 50; //1から255
-const int servo1_RightAngle = ;//サーボ1を右にふるときの角度、0から180
-const int servo1_LeftAngle = ;
+const int servo1_RightAngle = 0;//サーボ1を右にふるときの角度、0から180
+const int servo1_LeftAngle = 180;
 
 
 const int recvPin = 11;//赤外線の受信ピン
