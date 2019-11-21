@@ -27,15 +27,15 @@ def read_eki_jikoku(eki_jikoku):
     for item in eki_jikoku.split(","):
         arrive, leave = None, None
         if item == "":
-            pass
+            continue
         elif item[0] == "1":
             pair = item.split(";")[1]
             if "/" not in pair:
-                leave = pair
+                leave = int(pair)
             elif pair[-1] == "/":
-                arrive = pair[0:-1]
+                arrive = int(pair[0:-1])
             else:
-                arrive, leave = pair.split("/")
+                arrive, leave = map(int, pair.split("/"))
         elif item[0] == "2":
             pass
         ret.append((arrive, leave))
