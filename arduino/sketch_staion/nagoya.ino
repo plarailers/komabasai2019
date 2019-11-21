@@ -42,8 +42,8 @@ void servo2_1(){
 void setup(){
   Serial.begin(9600);
   irrecv.enableIRIn();
-  servo1.attach(/*ピン番号*/);
-  servo2.attach(/*ピン番号*/);
+  servo1.attach(5);
+  servo2.attach(9);
   }
 
 void loop(){
