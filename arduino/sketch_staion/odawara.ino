@@ -1,14 +1,15 @@
 //mega
+//odawara
 #include<IRremote.h>
 #include<VarSpeedServo.h>
 
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
-const unsigned int servo1_Siganl0 = 0x20DFDB90;//サーボを動かす信号
-const unsigned int servo1_Siganl1 = 0x20DFDB50;
-const unsigned int servo2_Siganl0 = 0x20DFDBD0;
-const unsigned int servo2_Siganl1 = 0x20DFDB30;
+const unsigned long servo1_Siganl0 = 0x20DFDB90;//サーボを動かす信号
+const unsigned long servo1_Siganl1 = 0x20DFDB50;
+const unsigned long servo2_Siganl0 = 0x20DFDBD0;
+const unsigned long servo2_Siganl1 = 0x20DFDB30;
 
 
 const int servoSpeed = 50; //1から255
