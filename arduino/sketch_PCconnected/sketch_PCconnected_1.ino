@@ -52,6 +52,7 @@ void loop(){
       Serial3.write(data);
       Serial4.write(data);
     }
+  }
     
  }
       
