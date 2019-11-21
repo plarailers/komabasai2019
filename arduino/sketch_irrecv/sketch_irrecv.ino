@@ -4,8 +4,8 @@
 
 #include <IRremote.h>
 
-const unsigned int channel_1 = 0x20DFDB8C;
-const unsigned int channel_2 = 0x20DFDB4C;
+const unsigned long channel_1 = 0x20DFDB8C;
+const unsigned long channel_2 = 0x20DFDB4C;
 
 const int outPin = 2;
 const int recvPin = 11;
