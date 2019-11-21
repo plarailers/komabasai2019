@@ -7,6 +7,12 @@ const unsigned long channel_4 = 0x20DFDB2C;
 const unsigned long channel_5 = 0x20DFDBAC;
 const unsigned long channel_no = 0xFFFFFFFF;
 
+double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
+double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
+double cAhead = 1.233;
+double cBack = 1.367;
+double r = 2.5; //一定に保ちたい回転数
+
 const int outPinA = 6;  //モーターのIN1
 const int outPinB = 9;  //モーターのIN2
 const int recvPin = 5; //赤外線の信号を受信
@@ -25,21 +31,16 @@ int status = 3;//車両の状況
 //4:ch2を受け取ってから2秒後〜他の信号(ch2,ch3)を受け取った　　　　　　　　＝後進中
 //5:ch3を受け取った　or マーカを読み取った〜他の信号(ch2,ch3)を受け取った　＝停車中
 
-
 int value;  //CdSセンサーの計測値を格納
 double volt_value;  //電圧の計測値を格納
 byte speedAhead; //モーターの前進回転スピード
 byte speedBack; //モーターの後進回転スピード
+byte speedBack_limit; //後転時はこの値から回転させてspeedBackまで持っていく
 IRsend irsend;  //sendPinはArduino nanoだと3番ピン
 IRrecv irrecv(recvPin); //recvPinをrecv可能にする
 int flagBefore, flagNow; //信号を記録
 bool battery_is_full = true; //駅で判定。Trueならそのまま、Faulseならシステムを強制終了させる。
 
-double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
-double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
-double cAhead = 1.233;
-double cBack = 1.367;
-double r = 2.5; //一定に保ちたい回転数
 
 void setup() {
   Serial.begin(9600);
@@ -61,9 +62,12 @@ void moveAhead(byte speed){ //前進
   analogWrite(outPinB,0);
 }
 
-void moveBack(byte speed){  //後進
+void moveBack(byte speed, byte speed_limit){  //後進
   analogWrite(outPinA,0);
-  analogWrite(outPinB,speed);
+  for (byte i = speed_limit; i <= speed; i++) {
+    analogWrite(outPinB,i);
+    delay(300);
+  }
 }
 
 void stop(){  //停止
@@ -71,7 +75,7 @@ void stop(){  //停止
   analogWrite(outPinB,0);
 }
 
-void move(decode_results *results, byte speedAhead, byte speedBack) {  //信号を受け取って動く指令
+void move(decode_results *results, byte speedAhead, byte speedBack, byte speedBack_limit) {  //信号を受け取って動く指令
   if (results->value == channel_1) {
     Serial.println("Ahead");
     flagBefore = flagNow;
@@ -86,7 +90,7 @@ void move(decode_results *results, byte speedAhead, byte speedBack) {  //信号�
     flagNow = 2;
     status = 3;
     time = millis();
-    moveBack(speedBack);
+    moveBack(speedBack, speedBack_limit);
   }
   else if (results->value == channel_3) {
     Serial.println("stop");
@@ -125,11 +129,13 @@ void loop() {
     Serial.print(" battery_shortage");
     battery_is_full = false;
     speedBack = 255;  //最大の電圧をモーターにかける
+    speedBack_limit = 100;
   }
 
   else if ((volt_value - 1) < (cAhead + r) && (volt_value -1) < (cBack + r)) { //電池が十分にあれば
     speedAhead = 255 * (cAhead + r) / (volt_value - 1);
     speedBack = 255 * (cBack + r) / (volt_value - 1);
+    speedBack_limit = 255 * (cBack + 0) / (volt_value - 1);
     }
 
   Serial.print(" speedAhead:");  //スピードを表示
@@ -143,7 +149,7 @@ void loop() {
 
   if (irrecv.decode(&results)) {  //赤外線の指令を受け取ってモーターを動かす
     printNumber(&results);  //受け取った信号を表示
-    move(&results, speedAhead, speedBack); //受け取った信号に応じた動きをする
+    move(&results, speedAhead, speedBack, speedBack_limit); //受け取った信号に応じた動きをする
     irrecv.resume();  //また信号を受け取れるようにする
   }
 
