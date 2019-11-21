@@ -2,15 +2,15 @@
 
 int data = 0;//データ格納用
 
-SoftwareSerial Serial3;
+SoftwareSerial Serial4(10,11);
 
 void setup(){
   Serial.begin(9600);
   Serial1.begin(9600);
   Serial2.begin(9600);
   Serial3.begin(9600);
-  SoftwareSerial(10,11);
-  SoftwareSerial.begin(9600);
+  Serial4.begin(9600);
+  Serisl4.listen();
   }
 void loop(){
   
@@ -29,8 +29,8 @@ void loop(){
    Serial.write(data);
    }
   
-  while(SoftwareSerial3.available() > 0){//名古屋から受け取った信号をPCに送信
-   data = SoftwareSerial3.read();
+  while(Serial4.available() > 0){//名古屋から受け取った信号をPCに送信
+   data = Serial4.read();
    Serial.write(data);
    }
    
