@@ -1,10 +1,10 @@
 #include <IRremote.h>
-//地デジの1~5
-const unsigned long channel_1 = 0x20DFDB8C;
-const unsigned long channel_2 = 0x20DFDB4C;
-const unsigned long channel_3 = 0x20DFDBCC;
-const unsigned long channel_4 = 0x20DFDB2C;
-const unsigned long channel_5 = 0x20DFDBAC;
+//BSの1~5
+const unsigned long channel_1 = 0x20DFDB80;
+const unsigned long channel_2 = 0x20DFDB40;
+const unsigned long channel_3 = 0x20DFDBC0;
+const unsigned long channel_4 = 0x20DFDB20;
+const unsigned long channel_5 = 0x20DFDBA0;
 const unsigned long channel_no = 0xFFFFFFFF;
 
 const int outPinA = 6;  //モーターのIN1
@@ -163,8 +163,8 @@ void loop() {
 
   if((ave[3]-ave[2]) > df && (ave[2]-ave[1]) > df && (ave[1]-ave[0]) > df && status != 1 && status != 3 && status != 5){
     Serial.print(" marker_exist"); //マーカーがあった
-    stop();//停車
-    for (int i = 0; i < 5; i++){
+    //stop();//停車
+    for (int i = 0; i < 2; i++){
       irsend.sendNEC(channel_4, 32);
     }
     irrecv.enableIRIn();
