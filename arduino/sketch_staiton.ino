@@ -20,6 +20,7 @@ const int servo2_LeftAngle = ;
 const int recvPin = 11;//赤外線の受信ピン
 int data = 0;//受信データ格納用
 IRrecv irrecv(recvPin);
+IRsend irsend;//sendPinはmegaは9,unoは3
 decode_results results;//うまくいかないときはloopの中へ
 
 
