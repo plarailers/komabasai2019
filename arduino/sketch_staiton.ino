@@ -11,7 +11,7 @@ const unsigned int servo2_Siganl1 =;
 
 
 const int servoSpeed = 50; //1から255
-const int servo1_Angle0 = ;//サーボ1を右にふるときの角度、0から180
+const int servo1_Angle0 = ;//サーボ1を直進にするときの角度、0から180
 const int servo1_Angle1 = ;
 const int servo2_Angle0 = ;
 const int servo2_Angle1 = ;
@@ -24,7 +24,7 @@ IRsend irsend;//sendPinはmegaは9,unoは3
 decode_results results;//うまくいかないときはloopの中へ
 
 
-void servo1_0(){//サーボ1を右にふる関数
+void servo1_0(){//サーボ1を直進にする関数
   servo1.write(servo1_Angle0, servoSpeed, true);
   }
 void servo1_1(){
