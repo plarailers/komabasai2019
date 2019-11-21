@@ -1,7 +1,10 @@
 //車両信号は送り先を識別するタイプ
+//車両信号→行き先(1:東京,2:小田原,3:静岡,4:名古屋)の順に送れば行き先を識別して送る
+//サーボの信号は単体でおくる(行き先はいらない)
 //Serial1は東京、Serial2は小田原、Serial3は静岡、SoftwareSerial(Serial4)は名古屋
 #include <SoftwareSerial.h>
 int data = 0;//データ格納用
+int destination = 0;//行き先データ格納用
 
 SoftwareSerial Serial4(10,11);//RXが10,TXが11
 
@@ -46,6 +49,16 @@ void loop(){
       Serial3.write(data);
     }else if(data == 0xD8 ||data == 0x38 ||data == 0xE4 ||data == 0x14){//名古屋のサーボの信号を送信
       Serial4.write(data);
+    }else{//車両用信号の場合
+      destination = Serial.read();
+      if(destination == 1){//行き先が東京駅
+        Serial1.write(data);
+      }else if(destination == 2){//行き先が小田原駅
+        Serial2.write(data);
+      }else if(destination == 3){//行き先が静岡駅
+        Serial3.write(data);
+      }else if(destination == 3){//行き先が名古屋駅
+        Serial4.write(data);
+      }
     }
-    
  }
