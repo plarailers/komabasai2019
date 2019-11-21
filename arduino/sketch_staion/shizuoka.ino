@@ -1,4 +1,5 @@
 //mega
+//sizuoka
 #include<IRremote.h>
 #include<VarSpeedServo.h>
 
