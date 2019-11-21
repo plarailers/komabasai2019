@@ -57,7 +57,7 @@ void loop(){
         Serial2.write(data);
       }else if(destination == 3){//行き先が静岡駅
         Serial3.write(data);
-      }else if(destination == 3){//行き先が名古屋駅
+      }else if(destination == 4){//行き先が名古屋駅
         Serial4.write(data);
       }
     }
