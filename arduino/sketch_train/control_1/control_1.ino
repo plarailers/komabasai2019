@@ -129,7 +129,7 @@ void loop() {
 
   else if (volt_value >= minVolt) { //電池が十分にあれば*/
     speedAhead = 255 * (c1Ahead + r) / (volt_value - 1);
-    speedBack = 255 * (c1Back + r) / (volr_value - 1);
+    speedBack = 255 * (c1Back + r) / (volt_value - 1);
  //}
 
   Serial.print(" speedAhead:");  //スピードを表示
@@ -141,7 +141,7 @@ void loop() {
 
   if (irrecv.decode(&results)) {  //赤外線の指令を受け取ってモーターを動かす
     printNumber(&results);  //受け取った信号を表示
-    move(&results, speed); //受け取った信号に応じた動きをする
+    move(&results, speedAhead, speedBack); //受け取った信号に応じた動きをする
     irrecv.resume();  //また信号を受け取れるようにする
   }
 
