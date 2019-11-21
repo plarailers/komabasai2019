@@ -1,5 +1,5 @@
 //車両信号は全ての駅に送信するタイプ
-//Serial1は東京、Serial2は小田原、Serial3は静岡、SoftwareSerialは名古屋
+//Serial1は東京、Serial2は小田原、Serial3は静岡、SoftwareSerial(Serial4)は名古屋
 #include <SoftwareSerial.h>
 int data = 0;//データ格納用
 
