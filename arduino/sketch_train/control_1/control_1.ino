@@ -28,15 +28,17 @@ int status = 3;//車両の状況
 
 int value;  //CdSセンサーの計測値を格納
 double volt_value;  //電圧の計測値を格納
-byte speed; //モーターの回転スピード
+byte speedAhead; //モーターの前進回転スピード
+byte speedBack; //モーターの後進回転スピード
 IRsend irsend;  //sendPinはArduino nanoだと3番ピン
 IRrecv irrecv(recvPin);
 int flagBefore, flagNow; //信号を記録
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
 double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
-
-double ratio = 0.6; //aheadの減速
+double c1Ahead = 1.233;
+double c1Back = 1.367;
+double r = 2.5; //一定に保ちたい回転数
 
 void setup() {
   Serial.begin(9600);
@@ -54,7 +56,7 @@ void printNumber(decode_results *results) { //赤外線センサーで読み取�
 }
 
 void moveAhead(byte speed){ //前進
-  analogWrite(outPinA,speed * ratio); //PWMでスピードを変化させる
+  analogWrite(outPinA,speed); //PWMでスピードを変化させる
   analogWrite(outPinB,0);
 }
 
@@ -68,14 +70,14 @@ void stop(){  //停止
   analogWrite(outPinB,0);
 }
 
-void move(decode_results *results, byte speed) {  //信号を受け取って動く指令
+void move(decode_results *results, byte speedAhead, byte speedBack) {  //信号を受け取って動く指令
   if (results->value == channel_1) {
     Serial.println("Ahead");
     flagBefore = flagNow;
     flagNow = 1;
     status = 1;
     time = millis();
-    moveAhead(speed);
+    moveAhead(speedAhead);
   }
   else if (results->value == channel_2) {
     Serial.println("Back");
@@ -83,7 +85,7 @@ void move(decode_results *results, byte speed) {  //信号を受け取って動�
     flagNow = 2;
     status = 3;
     time = millis();
-    moveBack(speed);
+    moveBack(speedBack);
   }
   else if (results->value == channel_3) {
     Serial.println("stop");
@@ -98,8 +100,6 @@ void move(decode_results *results, byte speed) {  //信号を受け取って動�
   }
   else {
     Serial.println("????"); //不明な信号を受け取った
-    //delay(2000);
-    //stop();
   }
   if (flagBefore == 0) {
       flagBefore = flagNow;
@@ -119,19 +119,24 @@ void loop() {
   Serial.print(volt_value); //変換後の電圧値を表示
   Serial.print("V");
 
-  if (volt_value < minVolt) { //電圧が最低電圧よりも低かったら
+  /*if ((volt_value - 1) < (c1Ahead + r) || (volt_value -1) < (c1Back + r)) {
     Serial.print(" battery_shortage");
     //irsend.sendNEC(channel_5, 32);  //電池が少ないことを母艦に伝える
     //irrecv.enableIRIn();
-    speed = 255;  //最大の電圧をモーターにかける
+    speedAhead = 255;  //最大の電圧をモーターにかける
+    speedBack = 255;
     }
 
-  else if (volt_value >= minVolt) { //電池が十分にあれば
-    speed = 255*(minVolt/volt_value); //電圧が高い時ほどモーターに電圧をかけないようにして速度を一定にする
-  }
+  else if (volt_value >= minVolt) { //電池が十分にあれば*/
+    speedAhead = 255 * (c1Ahead + r) / (volt_value - 1);
+    speedBack = 255 * (c1Back + r) / (volr_value - 1);
+ //}
 
-  Serial.print(" speed:");  //スピードを表示
-  Serial.print(speed); //電圧値によって決定したspeedを表示
+  Serial.print(" speedAhead:");  //スピードを表示
+  Serial.print(speedAhead); //電圧値によって決定したspeedAheadを表示
+  Serial.print(" ");
+  Serial.print(" speedBack:");
+  Serial.print(speedBack);
   Serial.print(" ");
 
   if (irrecv.decode(&results)) {  //赤外線の指令を受け取ってモーターを動かす
@@ -170,9 +175,5 @@ void loop() {
     irrecv.enableIRIn();
     status == 5;
   }
-
-
-
-
 
 }
