@@ -132,10 +132,10 @@ void loop() {
     speedBack_limit = 100;
   }
 
-  else if ((volt_value - 1) < (cAhead + r) && (volt_value -1) < (cBack + r)) { //電池が十分にあれば
+  else if ((volt_value - 1) >= (cAhead + r) && (volt_value -1) >= (cBack + r)) { //電池が十分にあれば
     speedAhead = 255 * (cAhead + r) / (volt_value - 1);
     speedBack = 255 * (cBack + r) / (volt_value - 1);
-    speedBack_limit = 255 * (cBack + 0) / (volt_value - 1);
+    speedBack_limit = 255 * (cBack + 2*r/3) / (volt_value - 1);
     }
 
   Serial.print(" speedAhead:");  //スピードを表示
