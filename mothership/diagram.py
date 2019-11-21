@@ -22,6 +22,10 @@ def read_oudia(file, encoding):
         return stack[0]
 
 
+def normalize_time(time):
+    return int(time) // 100 * 60 + int(time) % 100
+
+
 def read_eki_jikoku(eki_jikoku):
     ret = []
     for item in eki_jikoku.split(","):
@@ -31,11 +35,11 @@ def read_eki_jikoku(eki_jikoku):
         elif item[0] == "1":
             pair = item.split(";")[1]
             if "/" not in pair:
-                leave = int(pair)
+                leave = normalize_time(pair)
             elif pair[-1] == "/":
-                arrive = int(pair[0:-1])
+                arrive = normalize_time(pair[0:-1])
             else:
-                arrive, leave = map(int, pair.split("/"))
+                arrive, leave = map(normalize_time, pair.split("/"))
         elif item[0] == "2":
             pass
         ret.append((arrive, leave))
