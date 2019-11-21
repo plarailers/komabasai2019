@@ -10,15 +10,14 @@ const unsigned int servo2_RightSiganl =;
 const unsigned int servo2_LeftSiganl =;
 
 
-const int servoSpeed = /*サーボのスピード*/; //1から255、10から30程度が最適か
+const int servoSpeed = 50; //1から255
 const int servo1_RightAngle = ;//サーボ1を右にふるときの角度、0から180
 const int servo1_LeftAngle = ;
 const int servo2_RightAngle = ;
 const int servo2_LeftAngle = ;
 
 
-const int outPin = ;//赤外線の送信ピン
-const int recvPin = ;//赤外線の受信ピン
+const int recvPin = 11;//赤外線の受信ピン
 int data = 0;//受信データ格納用
 IRrecv irrecv(recvPin);
 decode_results results;//うまくいかないときはloopの中へ
@@ -43,7 +42,6 @@ void setup(){
   irrecv.enableIRIn();
   servo1.attach(/*ピン番号*/);
   servo2.attach(/*ピン番号*/);
-  pinMode(outPin, OUTPUT);
   }
 
 void loop(){
