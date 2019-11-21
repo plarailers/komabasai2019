@@ -40,10 +40,10 @@ void servo2_1(){
 
 
 void setup(){
-  Serial.begin(9600);
+  Serial1.begin(9600);
   irrecv.enableIRIn();
-  servo1.attach(/*ピン番号*/);
-  servo2.attach(/*ピン番号*/);
+  servo1.attach(13);
+  servo2.attach(3);
   }
 
 void loop(){
@@ -54,8 +54,8 @@ void loop(){
     Serial.write(data);//megaの場合はserial1を使う
     }
 
-  while(serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
-    data = serial.read();  
+  while(serial1.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
+    data = serial1.read();  
     if(data == servo1_Siganl0){
       servo1_0();
     }else if(data == servo1_Siganl1){
