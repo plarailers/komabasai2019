@@ -4,14 +4,18 @@
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
+const unsigned int servo1_RightSiganl =;//サーボを動かす信号
+const unsigned int servo1_LeftSiganl =;
+const unsigned int servo2_RightSiganl =;
+const unsigned int servo2_LeftSiganl =;
+
+
 const int servoSpeed = /*サーボのスピード*/; //1から255、10から30程度が最適か
 const int servo1_RightAngle = ;//サーボ1を右にふるときの角度、0から180
 const int servo1_LeftAngle = ;
 const int servo2_RightAngle = ;
 const int servo2_LeftAngle = ;
 
-const unsigned int
-const unsigned int
 
 const int outPin = ;//赤外線の送信ピン
 const int recvPin = ;//赤外線の受信ピン
@@ -19,7 +23,8 @@ int data = 0;//受信データ格納用
 IRrecv irrecv(recvPin);
 decode_results results;//うまくいかないときはloopの中へ
 
-void servo1Right(){//サーボを右にふる関数
+
+void servo1Right(){//サーボ1を右にふる関数
   servo1.write(servo1_RightAngle, servoSpeed, true);
   }
 void servo1Left(){
@@ -50,18 +55,18 @@ void loop(){
     }
 
   while(serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
-    data = serial.read();
-    if(data == ){
+    data = serial.read();  
+    if(data == servo1_RightSiganl){
+      servo1Right();
+    }else if(data == servo1_LeftSiganl){
+      servo1Left();
+    }else if(data == servo2_RightSiganl){
+      servo2Right();
+    }else if(data == servo2_LeftSiganl){
+      servo2Left();
+    }else{
       irsend.sendNEC(data + 551541504, 32);//1バイト→4バイト
       irrecv.enableIRIn();
-    }else if(data == ){
-      servo1Right();
-    }else if(data == ){
-      servo1Left();
-    }else if(data == ){
-      servo2Right();
-    }else if(data == ){
-      servo2Left();
     }
   }
   
