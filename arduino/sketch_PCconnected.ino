@@ -12,6 +12,7 @@ void setup(){
   Serial4.begin(9600);
   Serisl4.listen();
   }
+
 void loop(){
   
   while(Serial1.available() > 0){//東京から受け取った信号をPCに送信
