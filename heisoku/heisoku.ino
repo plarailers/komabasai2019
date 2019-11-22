@@ -2,7 +2,7 @@
 //N0→E1→N1→E2→N2→E3→N3→E4→N4→E5→N5→E0→NO(Nはノード、Eはエッジ)
 #include <SoftwareSerial.h>
 
-const int train1_arrival = 0x2C;//車両が到着した信号（車両→Arduino)(channel_4)
+const int train1_arrival = 0x2C;//車両が到着した信号(車両→Arduino)(channel_4)
 const int train2_arrival = 0x20;
 const int train3_arrival = 0x28;
 const int train4_arrival = 0x24;
@@ -12,13 +12,13 @@ const int train2_departure = 0x80;
 const int train3_departure = 0x88;
 const int train4_departure = 0x84;
 
-int[6] NODE = {};
+int[6] NODE = {};//NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int[6] EDGE = {};
 
 SoftwareSerial Serial4;
 
 int serch(int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
-for(int i = 0; i < 6; i++){
+for(int i=0; i<6; i++){
   if(EDGE[i] == train){//i番目の要素がtargetなら
     return i;//iを返す
   }
