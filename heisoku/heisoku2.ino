@@ -14,8 +14,8 @@ const int train3_departure = 0x88;
 const int train4_departure = 0x84;
 
 int data = 0;//信号格納用
-int new_time = 0;
-int old_time = 0;
+unsigned long long new_time = 0;
+unsigned long long old_time = 0;
 
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
@@ -97,13 +97,22 @@ void loop(){
       }
     }
   
-  if(count == 6){
-    while(new_time - old_time < 120000){
+  if(count == 6){//初期状態と同じとき
+    while(new_time - old_time < 120000){//前回の初期状態から120秒経過するまで待つ
       new_time = millis();
       delay(100);
       }
+    
     old_time = millis();
+    
+    for(int i=0; i<6; i++){
+    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0){//車両がノードにいて、1つ先のエッジとノードが空いているとき(初期状態でないという縛りなし)
+      depart(NODE[i]);//出発させる
+      EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
+      NODE[i] = 0;//車両がいたノードは空く
+      }
     }
+   }
       
 
 
