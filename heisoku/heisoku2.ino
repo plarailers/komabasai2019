@@ -14,11 +14,13 @@ const int train3_departure = 0x88;
 const int train4_departure = 0x84;
 
 int data = 0;//信号格納用
+int new_time = 0;
+int old_time = 0;
 
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
-int init = {};
+int init = {};//初期NODEの宣言、初期化
 
 SoftwareSerial Serial4(10,11);
 
@@ -87,11 +89,19 @@ void setup(){
 
 void loop(){
   
-  
-  
+  int count = 0;//初期状態判定用のカウンタ
   
   for(int i=0; i<6; i++){
     if(NODE[i] == init[i]){
+      count++;
+      }
+    }
+  
+  if(count == 6){
+    while(new_time - old_time < 12000){
+      
+    
+    }
       
 
 
