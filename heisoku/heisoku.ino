@@ -82,7 +82,7 @@ void setup(){
   Serial4.listen();
 
 
-  NODE ={/*初期位置を書く*/1,2,0,3,4,0};//ノードの初期位置を設定(エッジは最初は全て０)
+  NODE = {/*初期位置を書く*/1,2,0,3,4,0};//ノードの初期位置を設定(エッジは最初は全て０)
   firstNODE = NODE;// 初期状態のNODEを写しておく
 
   old_time = millis();//初期の時刻を入れる
@@ -98,7 +98,7 @@ void loop(){
 
   for(int i=0;i<6;i++){
     //車両がノードにいて、1つ先のエッジとノードが空いていて、車両のノードが初期と同じでないならば
-    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != firstNODE[i]){
+    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != firstNODE[i])){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
@@ -131,5 +131,6 @@ void loop(){
     signal_process(data);
   }
 
-
+  }
+  
 }
