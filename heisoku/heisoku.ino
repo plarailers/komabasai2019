@@ -70,38 +70,6 @@ void signal_process(int data){//到着した信号を処理する関数
   }
 }
 
-bool NODEisINIT(){//NODE=INITの時にtrueを返す関数
-  int count = 0;//初期状態判定用のカウンタ
-  
-  for(int i=0; i<6; i++){
-    if(NODE[i] == INIT[i]){
-      count++;
-      }
-    }
-  
-  if(count == 6){
-    return true;
-    }else{
-    return false;
-    }
-  }
-
-bool NODEiscompletelynotINIT(){//NODEとINITの全ての要素が違う時にtrueを返す関数
-  int count = 0;//カウンタ
-  
-  for(int i=0; i<6; i++){
-    if(NODE[i] != INIT[i]){
-      count++;
-      }
-    }
-  
-  if(count == 6){
-    return true;
-    }else{
-    return false;
-    }
-  }
-
 void setup(){
 
   Serial.begin(9600);
@@ -118,8 +86,6 @@ void setup(){
 
   old_time = millis();//初期の時刻を入れる
 }
-
-
 
 
 void loop(){
