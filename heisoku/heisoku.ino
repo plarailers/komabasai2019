@@ -47,7 +47,7 @@ void depart(int train){//出発信号を送信する関数
 }
 
 void signal_process(int data){//到着した信号を処理する関数
-  if(data == train1_arrival）{//車両1がノードに到着したとき
+  if(data == train1_arrival){//車両1がノードに到着したとき
     NODE[serch(1)] = 1;//そのノードに車両が入る
     EDGE[serch(1)] = 0;//車両がいたエッジが空く
   }else if(data == train2_arrival){
