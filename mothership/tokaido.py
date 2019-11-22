@@ -147,6 +147,12 @@ def setup():
                 if arrive and leave:
                     # 停車
                     signal_list.append(channel.encode_stop(train_id))
+                else:
+                    # 発進
+                    signal_list.append(channel.encode_leave(train_id, train.ressya["Houkou"]))
+            else:
+                # 発進
+                signal_list.append(channel.encode_leave(train_id, train.ressya["Houkou"]))
 
             if len(set(train.place for train in Train.all)) != len(Train.all):
                 print("重複を検知しました")

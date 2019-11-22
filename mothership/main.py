@@ -37,6 +37,8 @@ def setup():
     for signal in next(operator_mark):
         send_queue.put(signal)
 
+    process_send(1)
+
 
 def loop():
     # 受信バッファにデータがあるなら
@@ -61,10 +63,13 @@ def loop():
         for singal in signal_list:
             send_queue.put(singal)
 
+    process_send(0.1)
 
+
+def process_send(duration):
     # 送信キューにデータがあるなら
     while not send_queue.empty():
-        time.sleep(1)  # 連続で信号を送ると動かない？
+        time.sleep(duration)  # 連続で信号を送ると動かない？
         # データを取り出し、バイト列に変換。送信する。
         data_int = send_queue.get()
         data_bytes = data_int.to_bytes(SERIAL_SIZE, byteorder="big")
