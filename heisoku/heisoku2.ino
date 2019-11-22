@@ -68,6 +68,38 @@ void signal_process(int data){//到着した信号を処理する関数
   }
 }
 
+bool NODEisINIT(){//NODE=INITの時にtrueを返す関数
+  int count = 0;//初期状態判定用のカウンタ
+  
+  for(int i=0; i<6; i++){
+    if(NODE[i] == INIT[i]){
+      count++;
+      }
+    }
+  
+  if(count == 6){
+    return true;
+    }else{
+    return false;
+    }
+  }
+
+bool NODEiscompletelynotINIT(){//NODEとINITの全ての要素が違う時にtrueを返す関数
+  int count = 0;//カウンタ
+  
+  for(int i=0; i<6; i++){
+    if(NODE[i] != INIT[i]){
+      count++;
+      }
+    }
+  
+  if(count == 6){
+    return true;
+    }else{
+    return false;
+    }
+  }
+
 
 
 void setup(){
@@ -89,21 +121,17 @@ void setup(){
 
 void loop(){
   
-  int count = 0;//初期状態判定用のカウンタ
   
-  for(int i=0; i<6; i++){
-    if(NODE[i] == INIT[i]){
-      count++;
-      }
-    }
   
-  if(count == 6){//初期状態と同じとき
+  if(NODEisINIT()){//初期状態と同じとき
     while(new_time - old_time < 120000){//前回の初期状態から120秒経過するまで待つ
       new_time = millis();
       delay(100);
       }
     
     old_time = millis();
+    
+    while(!NODEiscompletelynotINIT()){//一つでもINITと同じ要素がある間
     
     for(int i=0; i<6; i++){
     if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0){//車両がノードにいて、1つ先のエッジとノードが空いているとき(初期状態でないという縛りなし)
@@ -112,7 +140,29 @@ void loop(){
       NODE[i] = 0;//車両がいたノードは空く
       }
     }
-   }
+      
+    while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
+    data = Serial1.read();
+    signal_process(data);
+    }
+
+    while(Serial2.available() > 0){//Serial2で受け取った到着信号を処理
+    data = Serial2.read();
+    signal_process(data);
+    }
+
+    while(Serial3.available() > 0){//Serial3で受け取った到着信号を処理
+    data = Serial3.read();
+    signal_process(data);
+    }
+
+    while(Serial4.available() > 0){//Serial4で受け取った到着信号を処理
+    data = Serial4.read();
+    signal_process(data);
+    }
+   
+    }
+  }
       
 
 
