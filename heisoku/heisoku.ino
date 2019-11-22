@@ -16,7 +16,7 @@ const int train4_departure = 0x84;
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
 
-SoftwareSerial Serial4;
+SoftwareSerial Serial4(10,11);
 
 int serch(int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
 for(int i=0; i<6; i++){
