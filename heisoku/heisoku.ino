@@ -61,7 +61,7 @@ void signal_process(int data){//到着した信号を処理する関数
 
 
 
-vod setup(){
+void setup(){
 
   Serial.begin(9600);
   Serial1.begin(9600);
