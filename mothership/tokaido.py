@@ -94,14 +94,14 @@ def setup():
         train.ressya = find_ressya(train.ressyabangou, diagram.normalize_time("600"))
 
     T1.place = TOKYO.edges[0]
-    T2.place = P1.edges[1]
-    T3.place = NAGOYA2.edges[0]
-    T4.place = NAGOYA1.edges[0]
+    T2.place = P5.edges[1]
+    T3.place = NAGOYA1.edges[0]
+    T4.place = P1.edges[0]
 
     P0.point = 1
     P1.point = 0
     P2.point = 1
-    P3.point = 1
+    P3.point = 0  # 静岡からスタートのため
     P4.point = 0
     P5.point = 0
     P6.point = 0
@@ -111,7 +111,7 @@ def setup():
     # 初回信号：ポイントセット、発進
     recv = yield [
         *[channel.encode_switch(node.name, node.point) for node in [P0, P1, P2, P3, P4, P5, P6]],
-        *[channel.encode_leave(train.ressya["Ressyabangou"], train.ressya["Houkou"]) for train in [T2, T3]],
+        # *[channel.encode_leave(train.ressya["Ressyabangou"], train.ressya["Houkou"]) for train in [T2, T3]],
     ]
 
     while True:

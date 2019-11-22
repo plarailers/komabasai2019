@@ -45,7 +45,7 @@ def loop():
         data_bytes = arduino.read(SERIAL_SIZE)
         data_int = int.from_bytes(data_bytes, byteorder="big")
         recv_queue.put(data_int)
-        print("受信　　:", "0x{:X}".format(data_int))
+        print("受信　　:", "0x{:X} {}".format(data_int, channel.decode(data_int)))
 
 
     while not recv_queue.empty():
@@ -56,18 +56,20 @@ def loop():
 
     border = math.floor(clock * TIME_RATIO / (5 * 60)) * (5 * 60)
     if (clock - INTERVAL) * TIME_RATIO < border:
-        time, signal_list = next(operator_time)
+        minutes, signal_list = next(operator_time)
+        print("{}:{:02}".format(minutes // 60, minutes % 60))
         for singal in signal_list:
             send_queue.put(singal)
 
 
     # 送信キューにデータがあるなら
     while not send_queue.empty():
+        time.sleep(1)  # 連続で信号を送ると動かない？
         # データを取り出し、バイト列に変換。送信する。
         data_int = send_queue.get()
         data_bytes = data_int.to_bytes(SERIAL_SIZE, byteorder="big")
         arduino.write(data_bytes)
-        print("　　送信:", "0x{:X}".format(data_int))
+        print("　　送信:", "0x{:X} {}".format(data_int, channel.decode(data_int)))
 
 
 if __name__ == "__main__":
