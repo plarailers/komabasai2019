@@ -6,10 +6,10 @@
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
-const unsigned long servo1_Siganl0 = 90;//サーボを動かす信号
-const unsigned long servo1_Siganl1 = 50;
-const unsigned long servo2_Siganl0 = D0;
-const unsigned long servo2_Siganl1 = 30;
+const unsigned long servo1_Siganl0 = 0x90;//サーボを動かす信号
+const unsigned long servo1_Siganl1 = 0x50;
+const unsigned long servo2_Siganl0 = 0xD0;
+const unsigned long servo2_Siganl1 = 0x30;
 
 
 const int servoSpeed = 50; //1から255
