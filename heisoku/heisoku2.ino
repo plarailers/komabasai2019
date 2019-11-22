@@ -20,7 +20,7 @@ unsigned long long old_time = 0;
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
-int init = {};//初期NODEの宣言、初期化
+int INIT[6] = {};//初期NODEの宣言、初期化
 
 SoftwareSerial Serial4(10,11);
 
@@ -92,7 +92,7 @@ void loop(){
   int count = 0;//初期状態判定用のカウンタ
   
   for(int i=0; i<6; i++){
-    if(NODE[i] == init[i]){
+    if(NODE[i] == INIT[i]){
       count++;
       }
     }
@@ -117,7 +117,7 @@ void loop(){
 
 
   for(int i=0; i<6; i++){
-    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && NODE[i] != init[i]){//車両が初期状態でないノードにいて、1つ先のエッジとノードが空いているとき
+    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && NODE[i] != INIT[i]){//車両が初期状態でないノードにいて、1つ先のエッジとノードが空いているとき
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
