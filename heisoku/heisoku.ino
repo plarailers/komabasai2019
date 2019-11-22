@@ -17,7 +17,7 @@ int data = 0;//信号格納用
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
-int firstNODE[6] = {};//初期状態のNODEを記述
+int INIT[6] = {};//初期状態のNODEを記述
 
 SoftwareSerial Serial4(10,11);
 
@@ -70,7 +70,37 @@ void signal_process(int data){//到着した信号を処理する関数
   }
 }
 
+bool NODEisINIT(){//NODE=INITの時にtrueを返す関数
+  int count = 0;//初期状態判定用のカウンタ
+  
+  for(int i=0; i<6; i++){
+    if(NODE[i] == INIT[i]){
+      count++;
+      }
+    }
+  
+  if(count == 6){
+    return true;
+    }else{
+    return false;
+    }
+  }
 
+bool NODEiscompletelynotINIT(){//NODEとINITの全ての要素が違う時にtrueを返す関数
+  int count = 0;//カウンタ
+  
+  for(int i=0; i<6; i++){
+    if(NODE[i] != INIT[i]){
+      count++;
+      }
+    }
+  
+  if(count == 6){
+    return true;
+    }else{
+    return false;
+    }
+  }
 
 void setup(){
 
@@ -82,8 +112,9 @@ void setup(){
   Serial4.listen();
 
 
-  NODE = {/*初期位置を書く*/1,2,0,3,4,0};//ノードの初期位置を設定(エッジは最初は全て０)
-  firstNODE = NODE;// 初期状態のNODEを写しておく
+  for (int i = 0; i < 6; i++) {
+    NODE[i] = INIT[i];// 初期状態のNODEを写して
+  }
 
   old_time = millis();//初期の時刻を入れる
 }
@@ -98,7 +129,7 @@ void loop(){
 
   for(int i=0;i<6;i++){
     //車両がノードにいて、1つ先のエッジとノードが空いていて、車両のノードが初期と同じでないならば
-    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != firstNODE[i])){
+    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != INIT[i])){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
