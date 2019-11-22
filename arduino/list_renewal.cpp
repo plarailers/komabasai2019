@@ -1,8 +1,8 @@
 #include<iostream>
 using namespace std;
 
-int func(int before, int tmp){ //a[i-1], a[i]を引数にして、次の状態でのa[i]の値を返す関数(a[i+1] == 0の場合の処理はmain関数の中で)
-    if (tmp == 0) {
+int func(int before, int tmp, int i){ //a[i-1], a[i], iを引数にして、次の状態でのa[i]の値を返す関数(a[i+1] == 0の場合の処理はmain関数の中で)
+    if (tmp == 0 && before != i) {
         return before;
     }
     else {
@@ -22,7 +22,7 @@ int main() {
     bool flag = false;
     bool flag2 = false;
     int a[7] = {1, 2, 0, 3, 4, 0, 1};
-    for (int j = 0; j < n; j++){ //nに適当な数字を入れる
+    for (int j = 0; j < 20; j++){
         if (a[1] == 0) {
             flag2 = true;
         }
@@ -31,7 +31,7 @@ int main() {
         if (a[i] == 0){
             flag = true;
         }
-        a[i] = func(a[i-1], a[i]);
+        a[i] = func(a[i-1], a[i], i);
         //cout << a[i] << endl;
         //cout << endl;
         if (flag) {
@@ -46,13 +46,13 @@ int main() {
         a[6] = 0;
         flag2 = false;
     }
-    /*for (int i = 0; i < 7; i++){
+    for (int i = 0; i < 7; i++){
          cout << a[i] << " ";
     }
     cout << endl;
-    }*/
-    for (int i = 0; i < 6; i++){
+    }
+    /*for (int i = 0; i < 6; i++){
          cout << a[i] << " ";
     }
-    cout << endl;
+    cout << endl;*/
 }
