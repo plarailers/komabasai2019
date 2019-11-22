@@ -77,7 +77,7 @@ void setup(){
   Serial4.listen();
 
 for(int i=0; i<6; i++){
-  NODE[i] = INIT[i]
+  NODE[i] = INIT[i];
  }
 
 }
