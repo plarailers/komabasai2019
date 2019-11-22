@@ -22,7 +22,7 @@ int INIT[6] = {};//初期状態のNODEを記述
 SoftwareSerial Serial4(10,11);
 
 unsigned long new_time = 0;
-unsigned long old_time = 0;
+unsigned long old_time[4] = {}; //列車ごとにold_timeを設ける
 
 long cycle = 120000; //1サイクルにかかる時間(ミリ秒)
 
@@ -82,9 +82,8 @@ void setup(){
 
   for (int i = 0; i < 6; i++) {
     NODE[i] = INIT[i];// 初期状態のNODEを写して
+    old_time[i] = millis();//各車両のold_timeを初期状態にする。old_time[4]とold_time[5]はムダ
   }
-
-  old_time = millis();//初期の時刻を入れる
 }
 
 
@@ -101,11 +100,11 @@ void loop(){
       NODE[i] = 0;//車両がいたノードは空く
     }
     //車両がノードにいて、１つ先のエッジとノードが空いていて、初期の時間と今の時間が１サイクル以上経っているならば
-    else if (NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && new_time - old_time >= cycle){
+    else if (NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && new_time - old_time[NODE[i]] >= cycle){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
-      old_time = millis();
+      old_time[NODE[i]] = new_time;//old_timeを更新する
   }
 
   while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
