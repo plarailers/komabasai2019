@@ -24,7 +24,7 @@ SoftwareSerial Serial4(10,11);
 unsigned long new_time = 0;
 unsigned long old_time = 0;
 
-int cycle = 120000; //1サイクルにかかる時間(ミリ秒)
+long cycle = 120000; //1サイクルにかかる時間(ミリ秒)
 
 int serch(int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
 for(int i=0; i<6; i++){
@@ -82,10 +82,10 @@ void setup(){
   Serial4.listen();
 
 
-  NODE ={/*初期位置を書く*/};//ノードの初期位置を設定(エッジは最初は全て０)
+  NODE ={/*初期位置を書く*/1,2,0,3,4,0};//ノードの初期位置を設定(エッジは最初は全て０)
   firstNODE = NODE;// 初期状態のNODEを写しておく
 
-  old_time = mills();//初期の時刻を入れる
+  old_time = millis();//初期の時刻を入れる
 }
 
 
@@ -93,7 +93,7 @@ void setup(){
 
 void loop(){
 
-  new_time = mills();//現在の時刻を取得
+  new_time = millis();//現在の時刻を取得
 
 
   for(int i=0;i<6;i++){
@@ -108,7 +108,7 @@ void loop(){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
-      old_time = mills();
+      old_time = millis();
   }
 
   while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
