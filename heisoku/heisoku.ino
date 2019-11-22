@@ -25,11 +25,13 @@ for(int i=0; i<6; i++){
   if(EDGE[i] == train){//i番目の要素がtargetなら
     return i;//iを返す
   }
+ }
 }
+  
 
 void serial_write(int signal){//信号を全ての駅に送信する関数
-  Serial1.write(siganl);
-  Serial2.write(siganl);
+  Serial1.write(signal);
+  Serial2.write(signal);
   Serial3.write(signal);
   Serial4.write(signal);
 }
