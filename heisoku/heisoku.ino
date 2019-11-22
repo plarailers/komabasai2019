@@ -17,7 +17,7 @@ int[6] EDGE = {};
 
 SoftwareSerial Serial4;
 
-int serch(int[6] EDGE, int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
+int serch(int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
 for(int i = 0; i < 6; i++){
   if(EDGE[i] == train){//i番目の要素がtargetなら
     return i;//iを返す
