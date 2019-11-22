@@ -17,6 +17,7 @@ int data = 0;//信号格納用
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
+int INIT[6] = {};//初期NODEの宣言、初期化
 
 SoftwareSerial Serial4(10,11);
 
@@ -75,8 +76,10 @@ void setup(){
   Serial4.begin(9600);
   Serial4.listen();
 
+for(int i=0; i<6; i++){
+  NODE[i] = INIT[i]
+ }
 
-  NODE ={/*初期位置を書く*/};//ノードの初期位置を設定(エッジは最初は全て０)
 }
 
 
