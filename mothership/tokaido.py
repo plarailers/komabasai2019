@@ -118,37 +118,38 @@ def setup():
         signal_list = []
         # 信号から車両を特定
         train_id = channel.decode_passed(recv)
-        train = [train for train in Train.all if train.ressya["Ressyabangou"] == train_id][0]
-        # 車両の位置をポイントを考慮して更新
-        passed = train.place.target
-        place = passed.edges[passed.point]
-        train.place = place
-        target = place.target
-        # 通ったポイントを更新
-        next_point = get_next_point(train, passed)
-        if next_point:
-            passed.point = next_point
-            signal_list.append(channel.encode_switch(passed.name, passed.point))
-        # 終点に向かうなら
-        if target.is_terminal:
-            # 次の車種に切り替え
-            eki_jikoku = diagram.read_eki_jikoku(train.ressya["EkiJikoku"])
-            arrive, _ = eki_jikoku[-1]
-            next_ressya = find_ressya(train_id, arrive)
-            train.ressya = next_ressya
-            # 停車、ポイント切り替え
-            signal_list.append(channel.encode_stop(train_id))
-        # 駅なら
-        elif place.index:
-            eki_jikoku = diagram.read_eki_jikoku(train.ressya["EkiJikoku"])
-            arrive, leave = eki_jikoku[place.index]
-            # 次の駅に止まるなら
-            if arrive and leave:
+        if train_id:
+            train = [train for train in Train.all if train.ressya["Ressyabangou"] == train_id][0]
+            # 車両の位置をポイントを考慮して更新
+            passed = train.place.target
+            place = passed.edges[passed.point]
+            train.place = place
+            target = place.target
+            # 通ったポイントを更新
+            next_point = get_next_point(train, passed)
+            if next_point:
+                passed.point = next_point
+                signal_list.append(channel.encode_switch(passed.name, passed.point))
+            # 終点に向かうなら
+            if target.is_terminal:
+                # 次の車種に切り替え
+                eki_jikoku = diagram.read_eki_jikoku(train.ressya["EkiJikoku"])
+                arrive, _ = eki_jikoku[-1]
+                next_ressya = find_ressya(train_id, arrive)
+                train.ressya = next_ressya
                 # 停車
                 signal_list.append(channel.encode_stop(train_id))
+            # 駅なら
+            elif place.index:
+                eki_jikoku = diagram.read_eki_jikoku(train.ressya["EkiJikoku"])
+                arrive, leave = eki_jikoku[place.index]
+                # 次の駅に止まるなら
+                if arrive and leave:
+                    # 停車
+                    signal_list.append(channel.encode_stop(train_id))
 
-        if len(set(train.place for train in Train.all)) != len(Train.all):
-            print("重複")
+            if len(set(train.place for train in Train.all)) != len(Train.all):
+                print("重複を検知しました")
 
         log()
         recv = yield signal_list
