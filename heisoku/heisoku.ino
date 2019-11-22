@@ -34,7 +34,7 @@ void serial_write(int signal){//信号を全ての駅に送信する関数
   Serial4.write(signal);
 }
 
-void　depart(int train){//出発信号を送信する関数
+void depart(int train){//出発信号を送信する関数
   if(train == 1){
     serial_write(train1_departure);
   }else if(train == 2){
