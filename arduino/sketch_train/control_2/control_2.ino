@@ -66,7 +66,7 @@ void moveBack(byte speed, byte speed_limit){  //後進
   analogWrite(outPinA,0);
   for (byte i = speed_limit; i <= speed; i++) {
     analogWrite(outPinB,i);
-    delay(300);
+    delay(100);
   }
 }
 
