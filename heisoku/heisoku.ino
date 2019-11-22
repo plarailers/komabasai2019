@@ -17,8 +17,14 @@ int data = 0;//信号格納用
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
+int firstNODE[6] = {};//初期状態のNODEを記述
 
 SoftwareSerial Serial4(10,11);
+
+unsigned long new_time = 0;
+unsigned long old_time = 0;
+
+int cycle = 120000; //1サイクルにかかる時間(ミリ秒)
 
 int serch(int train){//EDGE（配列)の何番目にtrain(整数)があるかを探す関数
 for(int i=0; i<6; i++){
@@ -77,6 +83,9 @@ void setup(){
 
 
   NODE ={/*初期位置を書く*/};//ノードの初期位置を設定(エッジは最初は全て０)
+  firstNODE = NODE;// 初期状態のNODEを写しておく
+
+  old_time = mills();//初期の時刻を入れる
 }
 
 
@@ -84,13 +93,22 @@ void setup(){
 
 void loop(){
 
+  new_time = mills();//現在の時刻を取得
+
 
   for(int i=0;i<6;i++){
-    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0){//車両がノードにいて、1つ先のエッジとノードが空いているとき
+    //車両がノードにいて、1つ先のエッジとノードが空いていて、車両のノードが初期と同じでないならば
+    if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != firstNODE[i]){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
     }
+    //車両がノードにいて、１つ先のエッジとノードが空いていて、初期の時間と今の時間が１サイクル以上経っているならば
+    else if (NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && new_time - old_time >= cycle){
+      depart(NODE[i]);//出発させる
+      EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
+      NODE[i] = 0;//車両がいたノードは空く
+      old_time = mills();
   }
 
   while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
