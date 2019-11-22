@@ -98,9 +98,11 @@ void loop(){
     }
   
   if(count == 6){
-    while(new_time - old_time < 12000){
-      
-    
+    while(new_time - old_time < 120000){
+      new_time = millis();
+      delay(100);
+      }
+    old_time = millis();
     }
       
 
