@@ -52,7 +52,7 @@ void loop(){
   if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
     data = results.value % 256;//4バイト→1バイト
     irrecv.resume();
-    Serial.write(data);//megaの場合はserial1を使う
+    Serial1.write(data);//megaの場合はserial1を使う
     }
 
   while(Serial1.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
