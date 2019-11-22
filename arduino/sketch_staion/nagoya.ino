@@ -5,10 +5,10 @@
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
-const unsigned long servo1_Siganl0 = 0x20DFDBD8;//サーボを動かす信号
-const unsigned long servo1_Siganl1 = 0x20DFDB38;
-const unsigned long servo2_Siganl0 = 0x20DFDBE4;
-const unsigned long servo2_Siganl1 = 0x20DFDB14;
+const unsigned long servo1_Siganl0 = 0xD8;//サーボを動かす信号
+const unsigned long servo1_Siganl1 = 0x38;
+const unsigned long servo2_Siganl0 = 0xE4;
+const unsigned long servo2_Siganl1 = 0x14;
 
 
 const int servoSpeed = 50; //1から255
@@ -51,8 +51,10 @@ void loop(){
   if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
     data = results.value % 256;//4バイト→1バイト
     irrecv.resume();
+    if(data == 0x2C ||data == 0x20 ||data == 0x28 ||data == 0x24 ||data == 0x5C ||data == 0xAC ||data == 0xA0 ||data == 0xA8 ||data == 0xA4 ||data == 0xDC){
     Serial.write(data);//megaの場合はserial1を使う
     }
+   }
 
   while(Serial.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
     data = Serial.read();  
