@@ -12,6 +12,8 @@ const int train2_departure = 0x80;
 const int train3_departure = 0x88;
 const int train4_departure = 0x84;
 
+int data = 0;//信号格納用
+
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
