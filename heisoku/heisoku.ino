@@ -1,5 +1,5 @@
 //NODEは停車するところ、EDGEは間の線路
-//N0→E1→N1→E2→N2→E3→N3→E4→N4→E5→N5→E0→NO(Nはノード、Eはエッジ)
+//N0→E1→N1→E2→N2→E3→N3→E4→N4→E5→N5→E0→N0(Nはノード、Eはエッジ)
 #include <SoftwareSerial.h>
 
 const int train1_arrival = 0x2C;//車両が到着した信号(車両→Arduino)(channel_4)
@@ -22,7 +22,7 @@ int INIT[6] = {};//初期状態のNODEを記述
 SoftwareSerial Serial4(10,11);
 
 unsigned long new_time = 0;
-unsigned long old_time[4] = {}; //列車ごとにold_timeを設ける
+unsigned long old_time[6] = {}; //列車ごとにold_timeを設ける。old_time[4], old_time[5]はムダ
 
 long cycle = 120000; //1サイクルにかかる時間(ミリ秒)
 
@@ -91,7 +91,7 @@ void loop(){
 
   new_time = millis();//現在の時刻を取得
 
-
+/*---------------出発指令、出発後の状態更新-----------------*/
   for(int i=0;i<6;i++){
     //車両がノードにいて、1つ先のエッジとノードが空いていて、車両のノードが初期と同じでないならば
     if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != INIT[i])){
@@ -99,7 +99,7 @@ void loop(){
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
     }
-    //車両がノードにいて、１つ先のエッジとノードが空いていて、初期の時間と今の時間が１サイクル以上経っているならば
+    //車両がノードにいて、１つ先のエッジとノードが空いていて、今の時間が初期の時間から１サイクル以上経っているならば
     else if (NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && new_time - old_time[NODE[i]] >= cycle){
       depart(NODE[i]);//出発させる
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
@@ -107,6 +107,7 @@ void loop(){
       old_time[NODE[i]] = new_time;//old_timeを更新する
   }
 
+/*-------------到着後の状態更新-------------*/
   while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
     data = Serial1.read();
     signal_process(data);
