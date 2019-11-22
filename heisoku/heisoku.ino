@@ -93,22 +93,22 @@ void loop(){
     }
   }
 
-  while(Serial1.availabale() > 0){//Serial1で受け取った到着信号を処理
+  while(Serial1.available() > 0){//Serial1で受け取った到着信号を処理
     data = Serial1.read();
     signal_process(data);
   }
 
-  while(Serial2.availabale() > 0){//Serial2で受け取った到着信号を処理
+  while(Serial2.available() > 0){//Serial2で受け取った到着信号を処理
     data = Serial2.read();
     signal_process(data);
   }
 
-  while(Serial3.availabale() > 0){//Serial3で受け取った到着信号を処理
+  while(Serial3.available() > 0){//Serial3で受け取った到着信号を処理
     data = Serial3.read();
     signal_process(data);
   }
 
-  while(Serial4.availabale() > 0){//Serial4で受け取った到着信号を処理
+  while(Serial4.available() > 0){//Serial4で受け取った到着信号を処理
     data = Serial4.read();
     signal_process(data);
   }
