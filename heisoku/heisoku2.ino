@@ -121,11 +121,13 @@ void setup(){
 
 void loop(){
   
-  
+  new_time = millis();
+  Serial.println(new_time);
   
   if(NODEisINIT()){//初期状態と同じとき
     while(new_time - old_time < 120000){//前回の初期状態から120秒経過するまで待つ
       new_time = millis();
+      Serial.println(new_time);
       delay(100);
       }
     
