@@ -90,9 +90,9 @@ void setup(){
 void loop(){
 
   new_time = millis();//現在の時刻を取得
-  Serial.print(new_time);
-  Serial.print(" ");
-  
+  Serial.print(new_time - old_time[0]);
+  Serial.println(" ");
+
 
 /*---------------出発指令、出発後の状態更新-----------------*/
   for(int i=0;i<6;i++){
