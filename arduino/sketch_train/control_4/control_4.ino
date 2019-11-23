@@ -9,7 +9,7 @@ const unsigned long channel_no = 0xFFFFFFFF;
 
 double minVolt = 5.3; //この電圧を下回ったら電池交換が必要
 double maxCdS = 185; //CdSがこの値よりも高くなったら銀シールの上を通過した
-double cAhead = 1.202;
+double cAhead = 1.341;//もともと4のcAhead//1.202;
 double cBack = 1.551;
 double r = 2.5; //一定に保ちたい回転数
 
