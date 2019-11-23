@@ -13,11 +13,12 @@ const int train3_departure = 0x88;
 const int train4_departure = 0x84;
 
 int data = 0;//信号格納用
+bool initial_state = true;
 
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
-int INIT[6] = {};//初期状態のNODEを記述
+int INIT[6] = {1,0,0,0,0,0};//初期状態のNODEを記述
 
 SoftwareSerial Serial4(10,11);
 
@@ -56,16 +57,24 @@ void depart(int train){//出発信号を送信する関数
 
 void signal_process(int data){//到着した信号を処理する関数
   if(data == train1_arrival){//車両1がノードに到着したとき
+    Serial.print("arraival: ");
+    Serial.println();
     NODE[serch(1)] = 1;//そのノードに車両が入る
     EDGE[serch(1)] = 0;//車両がいたエッジが空く
   }else if(data == train2_arrival){
+    Serial.print("arraival: ");
+    Serial.println(" 2 ");
     NODE[serch(2)] = 2;
     EDGE[serch(2)] = 0;
   }else if(data == train3_arrival){
+    Serial.print("arraival: ");
+    Serial.println(" 3 ");
     NODE[serch(3)] = 3;
     EDGE[serch(3)] = 0;
   }else if(data == train4_arrival){
-    NODE[serch(4)] = 3;
+    Serial.print("arraival: ");
+    Serial.println(" 4 ");
+    NODE[serch(4)] = 4;
     EDGE[serch(4)] = 0;
   }
 }
@@ -90,11 +99,37 @@ void setup(){
 void loop(){
 
   new_time = millis();//現在の時刻を取得
+  Serial.print("TIME: ");
   Serial.print(new_time - old_time[0]);
+  Serial.print(" ");
+  for (int k=0; k<6; k++) {
+    
+    Serial.print(" E");
+    Serial.print(k);
+    Serial.print(": ");
+    Serial.print(EDGE[k]);
+    Serial.print(" N");
+    Serial.print(k);
+    Serial.print(": ");
+    Serial.print(NODE[k]);
+  }
   Serial.println(" ");
-
+  
 
 /*---------------出発指令、出発後の状態更新-----------------*/
+
+  if (initial_state) {
+    for(int i=0;i<6;i++){
+      if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0){
+        depart(NODE[i]);//出発させる
+        Serial.print("depart ");
+        Serial.println(i);
+        EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
+        NODE[i] = 0;//車両がいたノードは空く
+      }
+    }
+    initial_state = false;
+  }
   for(int i=0;i<6;i++){
     //車両がノードにいて、1つ先のエッジとノードが空いていて、車両のノードが初期と同じでないならば
     if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0 && (NODE[i] != INIT[i])){
