@@ -17,7 +17,7 @@ int data = 0;//信号格納用
 //NODE,EDGE共に車両番号が入り、車両がいない場合は0が入る
 int NODE[6] = {};//NODEの宣言、初期化
 int EDGE[6] = {};//EDGEの宣言、初期化
-int INIT[6] = {};//初期NODEの宣言、初期化
+int INIT[6] = {1,0,0,0,0,0};//初期NODEの宣言、初期化
 
 SoftwareSerial Serial4(10,11);
 
@@ -86,11 +86,19 @@ for(int i=0; i<6; i++){
 
 
 void loop(){
+  //depart(1);
+  //delay(1000);
 
-
+  
   for(int i=0;i<6;i++){
     if(NODE[i] != 0 && EDGE[(i+1)%6] == 0 && NODE[(i+1)%6] == 0){//車両がノードにいて、1つ先のエッジとノードが空いているとき
+      for(int j=0; j<10;j++)
+      {
       depart(NODE[i]);//出発させる
+      }
+      Serial.println(NODE[i]);
+      delay(1000);
+      Serial.println("in");
       EDGE[(i+1)%6] = NODE[i];//1つ先のエッジに車両が入る
       NODE[i] = 0;//車両がいたノードは空く
     }
