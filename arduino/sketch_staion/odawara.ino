@@ -6,15 +6,15 @@
 VarSpeedServo servo1;
 VarSpeedServo servo2;
 
-const unsigned long servo1_Siganl0 = 0x90;//サーボを動かす信号
-const unsigned long servo1_Siganl1 = 0x50;
+const unsigned long servo1_Siganl0 = 0x2C;//サーボを動かす信号
+const unsigned long servo1_Siganl1 = 0xAC;
 const unsigned long servo2_Siganl0 = 0xD0;
 const unsigned long servo2_Siganl1 = 0x30;
 
 
 const int servoSpeed = 50; //1から255
 const int servo1_Angle0 = 0;//サーボ1を直進にするときの角度、0から180
-const int servo1_Angle1 = 180;
+const int servo1_Angle1 = 130;
 const int servo2_Angle0 = 0;
 const int servo2_Angle1 = 180;
 
@@ -57,6 +57,7 @@ void loop(){
       }else if(data == servo1_Siganl1){
       servo1_1();
       }
+ }
       
  
 
@@ -75,5 +76,6 @@ void loop(){
       irrecv.enableIRIn();
     }
   }*/
+  
   
   }
