@@ -52,6 +52,12 @@ void loop(){
  if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
     data = results.value % 256;//4バイト→1バイト
     irrecv.resume();
+    if(data == servo1_Siganl0){
+      servo1_0();
+      }else if(data == servo1_Siganl1){
+      servo1_1();
+      }
+      
  
 
  /* while(Serial1.available() > 0){//シリアルで受け取った信号をもとに車両に送信またはサーボを動かす
