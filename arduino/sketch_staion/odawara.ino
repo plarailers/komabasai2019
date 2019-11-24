@@ -50,11 +50,11 @@ void setup(){
 void loop(){
   
  if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
-    data = results.value % 256;//4バイト→1バイト
+    data = results.value;//4バイト→1バイト
     irrecv.resume();
-    if(data == servo1_Siganl0){
+    if(data == 20DFDBAC || 659A20DF){//待避
       servo1_0();
-      }else if(data == servo1_Siganl1){
+      }else if(data == 20DFDB2C || 659AC03F){//直進
       servo1_1();
       }
  }
