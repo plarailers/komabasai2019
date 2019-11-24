@@ -20,7 +20,7 @@ const int servo2_Angle1 = 180;
 
 
 const int recvPin = 11;//赤外線の受信ピン
-int data = 0;//受信データ格納用
+unsigned long data = 0;//受信データ格納用
 IRrecv irrecv(recvPin);
 IRsend irsend;//sendPinはmegaは9,unoは3
 decode_results results;//うまくいかないときはloopの中へ
@@ -45,16 +45,19 @@ void setup(){
   irrecv.enableIRIn();
   servo1.attach(13);
   servo2.attach(6);
+  Serial.begin(9600);
   }
 
 void loop(){
   
  if(irrecv.decode(&results)){//車両から受け取った信号をシリアルで送信
     data = results.value;//4バイト→1バイト
+    Serial.println(data, HEX);
     irrecv.resume();
-    if(data == 20DFDBAC || 659A20DF){//待避
+    if(data == 0x20DFDBAC || data == 0x659A20DF){//待避
       servo1_0();
-      }else if(data == 20DFDB2C || 659AC03F){//直進
+      Serial.println("x");
+      }else if(data == 0x20DFDB2C || data == 0x659AC03F){//直進
       servo1_1();
       }
  }
