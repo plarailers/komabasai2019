@@ -1,0 +1,439 @@
+//外回り東京＞品川＞池袋
+//山手線制御用
+//定義の順番は崩さないこと
+//定数を設定すればコンパイルできることを確認済
+
+#include<Servo.h>
+
+const int SENSOR[6] = {0,1,2,3,4,5};//ここにセンサーピンを定義（配列）
+const int SERVO[9] = {2,3,4,5,6,7,8,9,10};//ここにサーボピンを定義
+//ここにサーボのインスタンスを定義
+Servo servo2;
+Servo servo3;
+Servo servo4;
+Servo servo5;
+Servo servo6;
+Servo servo7;
+Servo servo8;
+Servo servo9;
+Servo servo10;
+
+const int stop_time1 = 6000;//shibu_shinaの停車時間
+const int stop_time2 = 7000;//tokyo_shinjukuの停車時間
+const int spare_time1 = 2400;//各停の発車に要する時間
+const int spare_time2 = 1000;//快速の発車にかかる時間
+const int short_time = 0;//列車がセンサーの上に来てから本当にセンサを読ませるまでの時間
+const int sup1_mult = 0.85;//快速判定の倍率
+const int sup2_mult = 0.7;//各停判定の倍率
+unsigned long new_time;
+
+struct Station{//駅の構造体
+  int Rstock;
+  int Lstock;
+  int value;//valueはloopの中で更新
+  int Rstatus;
+  int Lstatus;
+  unsigned long old_time1;
+  unsigned long old_time2;
+  unsigned long old_time3;
+  unsigned long old_time4;
+  unsigned long old_time5;
+  int sup1;
+  int sup2;
+};
+
+Station tokyo     = {0};//構造体の初期化
+Station shinjuku  = {0};
+Station ikebukuro = {0};
+Station shibuya   = {0};
+Station shinagawa = {0};
+Station tabata    = {0};
+
+
+void get(unsigned long &time){//時間を取得する関数
+  time = millis();
+}
+
+bool rapid(Station &station){//快速を判定する関数
+   if(station.value < station.sup1 &&station.value >= station.sup2){
+      return true;
+   }else{
+    return false;
+  }
+}
+
+bool local(Station &station){//各停を判定する関数
+   if(station.value < station.sup2){
+      return true;
+   }else{
+    return false;
+  }
+}
+
+bool NextisFree(Station &station){//前のstockが空いているか判定する関数
+  if(station.Rstock == 0 && station.Lstock == 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+
+//池袋、渋谷、品川の関数1 ikebukuro
+
+void shibu_shina1(Station &station, Station &backward_station, Servo servo){
+  
+    Serial.print(station.Lstatus);//0:いない1:入線、2:停車、3:発車、4:発車完了
+    Serial.print(station.Rstatus);
+    Serial.print(station.Lstock);//0:stationの前の区間に車両がいる、1：stationの前の区間に車両がいない
+    Serial.print(station.Rstock);
+    Serial.print(station.value);
+    
+  if(station.Lstatus == 0 && station.Rstatus == 0 && station.value < 650 /*station.sup1*/){
+    backward_station.Lstock = 0;
+    backward_station.Rstock = 0;
+    station.Lstatus = 1;
+    station.Rstatus = 1;
+    get(station.old_time1);
+    }
+
+  else if(station.Lstatus == 1 && station.Rstatus == 1 /*&& new_time - station.old_time1 > short_time*/){
+    
+        if(station.value < 650 /*local(station)*/){//各停接近
+            servo.write(0);//停車
+            backward_station.Lstock = 0;//消してもいいかも
+            station.Lstatus = 2;
+            station.Rstatus = 0;
+            get(station.old_time2);
+        }
+        else if(station.value < 650 && station.value > 500 /*rapid(station)*/){//急行接近
+            backward_station.Rstock = 0;//消してもいいかも
+            if(NextisFree(station)){
+                servo.write(90);//通過
+                station.Rstock = 1;
+                station.Rstatus = 3;
+                station.Lstatus = 0;
+                get(station.old_time5);
+            }else{//停車
+                servo.write(0);
+                station.Rstatus = 2;
+                station.Lstatus = 0;
+                get(station.old_time3);
+            }
+        }
+    }
+  
+    else if(station.Lstatus == 2 && NextisFree(station) && new_time - station.old_time2 > stop_time1){//各停発車
+        servo.write(90);
+        station.Lstock = 1;
+        station.Lstatus = 3;
+        get(station.old_time4);
+    }
+    else if(station.Lstatus == 3 && new_time - station.old_time4 > spare_time1){//各停発車完了
+    station.Lstatus = 0;
+    }
+    else if(station.Rstatus == 2 && NextisFree(station) && new_time - station.old_time3 > stop_time1){//急行発車
+        servo.write(90);
+        station.Rstock = 1;
+        station.Rstatus = 3;
+        get(station.old_time5);
+    }
+    else if(station.Rstatus == 3 && new_time - station.old_time5 > spare_time2){//快速発車完了
+        station.Rstatus = 0;
+    }
+}
+
+
+//池袋、渋谷、品川の関数2 sninagawa
+
+void shibu_shina2(Station &station, Station &backward_station, Servo servo){
+  
+    Serial.print(station.Lstatus);//0:いない1:入線、2:停車、3:発車、4:発車完了
+    Serial.print(station.Rstatus);
+    Serial.print(station.Lstock);//0:stationの前の区間に車両がいる、1：stationの前の区間に車両がいない
+    Serial.print(station.Rstock);
+    Serial.print(station.value);
+    
+  if(station.Lstatus == 0 && station.Rstatus == 0 && station.value <  700 /*station.sup1*/){
+    backward_station.Lstock = 0;
+    backward_station.Rstock = 0;
+    station.Lstatus = 1;
+    station.Rstatus = 1;
+    get(station.old_time1);
+    }
+
+  else if(station.Lstatus == 1 && station.Rstatus == 1 /*&& new_time - station.old_time1 > short_time*/){
+    
+        if(station.value < 700 /*local(station)*/){//各停接近
+            servo.write(0);//停車
+            backward_station.Lstock = 0;//消してもいいかも
+            station.Lstatus = 2;
+            station.Rstatus = 0;
+            get(station.old_time2);
+        }
+        else if(station.value < 700 && station.value > 500 /* rapid(station)*/){//急行接近
+            backward_station.Rstock = 0;//消してもいいかも
+            if(NextisFree(station)){
+                servo.write(90);//通過
+                station.Rstock = 1;
+                station.Rstatus = 3;
+                station.Lstatus = 0;
+                get(station.old_time5);
+            }else{//停車
+                servo.write(0);
+                station.Rstatus = 2;
+                station.Lstatus = 0;
+                get(station.old_time3);
+            }
+        }
+    }
+  
+    else if(station.Lstatus == 2 && NextisFree(station) && new_time - station.old_time2 > stop_time1){//各停発車
+        servo.write(90);
+        station.Lstock = 1;
+        station.Lstatus = 3;
+        get(station.old_time4);
+    }
+    else if(station.Lstatus == 3 && new_time - station.old_time4 > spare_time1){//各停発車完了
+    station.Lstatus = 0;
+    }
+    else if(station.Rstatus == 2 && NextisFree(station) && new_time - station.old_time3 > stop_time1){//急行発車
+        servo.write(90);
+        station.Rstock = 1;
+        station.Rstatus = 3;
+        get(station.old_time5);
+    }
+    else if(station.Rstatus == 3 && new_time - station.old_time5 > spare_time2){//快速発車完了
+        station.Rstatus = 0;
+    }
+}
+
+
+//池袋、渋谷、品川の関数3 tokyo
+
+void shibu_shina3(Station &station, Station &backward_station, Servo servo){
+  
+    Serial.print(station.Lstatus);//0:いない1:入線、2:停車、3:発車、4:発車完了
+    Serial.print(station.Rstatus);
+    Serial.print(station.Lstock);//0:stationの前の区間に車両がいる、1：stationの前の区間に車両がいない
+    Serial.print(station.Rstock);
+    Serial.println(station.value);
+    
+  if(station.Lstatus == 0 && station.Rstatus == 0 && station.value <  700 /*station.sup1*/){
+    backward_station.Lstock = 0;
+    backward_station.Rstock = 0;
+    station.Lstatus = 1;
+    station.Rstatus = 1;
+    get(station.old_time1);
+    }
+
+  else if(station.Lstatus == 1 && station.Rstatus == 1 /*&& new_time - station.old_time1 > short_time*/){
+    
+        if(station.value < 700 /*local(station)*/){//各停接近
+            servo.write(0);//停車
+            backward_station.Lstock = 0;//消してもいいかも
+            station.Lstatus = 2;
+            station.Rstatus = 0;
+            get(station.old_time2);
+        }
+        
+    }
+  
+    else if(station.Lstatus == 2 && NextisFree(station) && new_time - station.old_time2 > stop_time1){//各停発車
+        servo.write(90);
+        station.Lstock = 1;
+        station.Lstatus = 3;
+        get(station.old_time4);
+    }
+    else if(station.Lstatus == 3 && new_time - station.old_time4 > spare_time1){//各停発車完了
+    station.Lstatus = 0;
+    }
+    else if(station.Rstatus == 2 && NextisFree(station) && new_time - station.old_time3 > stop_time1){//急行発車
+        servo.write(90);
+        station.Rstock = 1;
+        station.Rstatus = 3;
+        get(station.old_time5);
+    }
+    else if(station.Rstatus == 3 && new_time - station.old_time5 > spare_time2){//快速発車完了
+        station.Rstatus = 0;
+    }
+}
+
+
+
+//ここに東京と新宿の関数を定義
+
+void tokyo_shinjuku(Station &station, Station &backward_station, Servo servo1, Servo servo2, Servo servo3){
+
+    Serial.print(station.Lstatus);
+    Serial.print(station.Rstatus);
+    Serial.print(station.Lstock);
+    Serial.print(station.Rstock);
+    Serial.println(station.value);
+
+    
+    
+    if(station.Lstatus == 0 && station.Rstatus == 0 && station.value < station.sup1){//各停も急行もいない
+        station.Lstatus = 1;
+        station.Rstatus = 1;
+        backward_station.Lstock = 0;
+        backward_station.Rstock = 0;
+        get(station.old_time1);
+   }
+
+
+   else if(station.Lstatus == 2 && station.Rstatus == 0 && station.value < station.sup1 && new_time - station.old_time2 >spare_time1){//各停停車中に快速が侵入
+        servo3.write(90);
+        servo2.write(0);//停車
+        station.Rstatus = 2;
+        backward_station.Rstock = 0;
+        get(station.old_time3);
+   }
+
+   /*else if(快速に各停追いつく）*/
+
+   else if(station.Lstatus == 1 && station.Rstatus == 1 && new_time - station.old_time1 > short_time){
+       
+       if(/*station.value < 400*/local(station)){//各停接近
+            servo3.write(180);
+            servo1.write(0);
+            backward_station.Lstock = 0;//消してもいいかも
+            station.Lstatus = 2;
+            station.Rstatus = 0;
+            get(station.old_time2);
+       }
+       else if(/*station.value < 750 && station.value > 400 */rapid(station)){//急行接近
+            servo3.write(90);
+            servo2.write(0);
+            backward_station.Rstock = 0;//消してもいいかも
+            station.Rstatus = 2;
+            station.Lstatus = 0;
+            get(station.old_time3);
+       }
+
+   }
+        
+   else if(station.Lstatus == 2 && NextisFree(station) && new_time - station.old_time2 > stop_time2 && station.Rstatus == 0 && backward_station.Rstock == 0){
+        servo1.write(90);
+        station.Lstock = 1;
+        station.Lstatus = 0;
+   }
+        
+   else if(station.Rstatus == 2 && NextisFree(station) && new_time - station.old_time3 > stop_time2){
+        servo2.write(90);
+        station.Rstock = 1;
+        station.Rstatus = 0;
+   }
+  
+}
+
+
+//田端信号所の関数
+void tabata_sig(Station &station, Station &backward_station){
+
+    Serial.print(station.Lstatus);//0:いない1:入線、2:停車、3:発車、4:発車完了
+    Serial.print(station.Rstatus);
+    Serial.print(station.Lstock);//0:stationの前の区間に車両がいる、1：stationの前の区間に車両がいない
+    Serial.print(station.Rstock);
+    Serial.print(station.value);
+   
+
+   if(station.Lstatus == 0 && station.Rstatus == 0 && station.value < station.sup1){
+    backward_station.Lstock = 0;
+    backward_station.Rstock = 0;
+    station.Lstatus = 1;
+    station.Rstatus = 1;
+    get(station.old_time1);
+  }
+
+  else if(station.Lstatus == 1 && station.Rstatus == 1 && new_time - station.old_time1 > short_time){
+    if(local(station)){
+       backward_station.Lstock = 0;
+       station.Lstock = 1;
+       station.Lstatus = 2;
+       station.Rstatus = 0;
+       get(station.old_time2);
+    }
+    else if(rapid(station)){
+       backward_station.Rstock = 0;
+       station.Rstock = 1;
+       station.Rstatus = 2;
+       station.Lstatus = 0;
+       get(station.old_time3);
+    }
+  }
+
+  else if(station.Lstatus == 2 && new_time - station.old_time2 > spare_time1){
+     station.Lstatus = 0;
+  }
+  else if(station.Rstatus == 2 && new_time - station.old_time3 > spare_time2){
+     station.Rstatus = 0;
+  }
+}
+    
+    
+void setup(){
+  Serial.begin(9600);
+  //ここにサーボの初期化を書く
+    servo2.attach(SERVO[0]);
+    servo3.attach(SERVO[1]);
+    servo4.attach(SERVO[2]);
+    servo5.attach(SERVO[3]);
+    servo6.attach(SERVO[4]);
+    servo7.attach(SERVO[5]);
+    servo8.attach(SERVO[6]);
+    servo9.attach(SERVO[7]);
+    servo10.attach(SERVO[8]);
+    
+    servo2.write(90);
+    servo3.write(90);
+    servo4.write(90);
+    servo5.write(90);
+    servo6.write(90);
+    servo7.write(90);
+    servo8.write(90);
+    servo9.write(90);
+    servo10.write(90);
+
+    tokyo.sup1       = analogRead(SENSOR[0]) * 0.9;
+    tokyo.sup2       = analogRead(SENSOR[0]) * 0.7;
+    
+    ikebukuro.sup1   = analogRead(SENSOR[1]) * sup1_mult;
+    ikebukuro.sup2   = analogRead(SENSOR[1]) * sup2_mult;
+    
+    shinagawa.sup1   = analogRead(SENSOR[2]) * sup1_mult;
+    shinagawa.sup2   = analogRead(SENSOR[2]) * sup2_mult;
+
+}
+
+void loop(){
+  
+  get(new_time);
+
+   tokyo.value = analogRead(SENSOR[2]);
+   ikebukuro.value = analogRead(SENSOR[1]);
+   shinagawa.value = analogRead(SENSOR[3]);
+   
+   
+  //ここにメインの処理を書く
+  
+  shibu_shina3(tokyo, ikebukuro, servo2);
+   
+  shibu_shina1(ikebukuro, shinagawa, servo5);
+
+  shibu_shina2(shinagawa, tokyo, servo6);
+
+/*Serial.print(analogRead(SENSOR[0]));
+Serial.print(analogRead(SENSOR[1]));
+Serial.println(analogRead(SENSOR[2]));*/
+/*servo6.write(90);
+delay(1000);
+servo6.write(0);
+delay(1000);*/
+
+//servo3.write(90);
+//elay(1000);
+//servo6.write(0);
+//delay(1000);
+
+}
